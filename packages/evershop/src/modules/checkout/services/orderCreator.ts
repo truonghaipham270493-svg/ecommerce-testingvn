@@ -63,7 +63,7 @@ export type CreateOrderArgs = [cart: Cart];
 // Order Result Type - Extends DB type with insert result
 // ============================================================================
 
-export type OrderCreateResult = InsertResultWithRow<OrderRow>;
+export type CreateOrderResult = InsertResultWithRow<OrderRow>;
 
 async function disableCart(cartId: number, connection: PoolClient) {
   const cart = await update('cart')
@@ -73,7 +73,7 @@ async function disableCart(cartId: number, connection: PoolClient) {
   return cart;
 }
 
-async function saveOrder<T = OrderCreateResult>(
+async function saveOrder<T = CreateOrderResult>(
   cart: Cart,
   connection: PoolClient
 ): Promise<T> {
@@ -171,7 +171,7 @@ async function saveOrderItems(
   return savedItems;
 }
 
-async function createOrderFunc<T extends OrderCreateResult>(cart: Cart) {
+async function createOrderFunc<T extends CreateOrderResult>(cart: Cart) {
   // Start creating order
   const connection = await getConnection(pool);
   try {
@@ -215,7 +215,7 @@ async function createOrderFunc<T extends OrderCreateResult>(cart: Cart) {
  * @returns {Promise<Object>} - The created order object
  * @throws {Error} - If the order creation fails due to validation errors or database issues
  */
-export const createOrder = async <T extends OrderCreateResult>(
+export const createOrder = async <T extends CreateOrderResult>(
   cart: Cart
 ): Promise<T> => {
   const order = await hookable(createOrderFunc<T>, {

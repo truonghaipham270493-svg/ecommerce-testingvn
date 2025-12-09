@@ -4,7 +4,7 @@ import { hookAfter } from '../../lib/util/hookable.js';
 import { merge } from '../../lib/util/merge.js';
 import { addProcessor } from '../../lib/util/registry.js';
 import {
-  OrderCreateResult,
+  CreateOrderResult,
   SaveOrderArgs,
   SaveOrderContext
 } from '../checkout/services/orderCreator.js';
@@ -392,7 +392,7 @@ export default () => {
     }
   );
 
-  hookAfter<SaveOrderContext, OrderCreateResult, SaveOrderArgs>(
+  hookAfter<SaveOrderContext, CreateOrderResult, SaveOrderArgs>(
     'saveOrder',
     async function createShipmentForVirtualProductsOrder(
       order,
