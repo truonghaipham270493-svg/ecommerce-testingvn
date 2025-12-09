@@ -54,7 +54,7 @@ export default function Shipping({ product, setting }: ShippingProps) {
             required
             validation={{
               min: {
-                value: 1,
+                value: 0,
                 message: 'Weight must be a positive number'
               }
             }}
