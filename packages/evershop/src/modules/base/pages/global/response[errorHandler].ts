@@ -36,6 +36,7 @@ export default async (request: EvershopRequest, response, next) => {
         setPageMetaInfo(request, {
           route: {
             id: route.id,
+            isAdmin: route.isAdmin,
             path: route.path,
             url: getContextValue(request, 'currentUrl'),
             params: request.params

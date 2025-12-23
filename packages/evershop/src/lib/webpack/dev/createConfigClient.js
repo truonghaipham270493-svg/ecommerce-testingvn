@@ -134,21 +134,6 @@ export function createConfigClient(
     ]
   });
 
-  loaders.push({
-    test: /Client\.js$/,
-    use: [
-      {
-        loader: path.resolve(
-          CONSTANTS.LIBPATH,
-          'webpack/loaders/GraphQLAPILoader.js'
-        ),
-        options: {
-          isAdmin: false //route.isAdmin
-        }
-      }
-    ]
-  });
-
   const { plugins } = config;
   plugins.push(new GraphqlPlugin());
   plugins.push(new webpack.ProgressPlugin());
