@@ -294,6 +294,7 @@ export default function General({ attribute, createGroupApi }: GeneralProps) {
                 label="Type"
                 defaultValue={attribute?.type}
                 required
+                disabled={!!attribute?.attributeId}
                 validation={{ required: 'Type is required' }}
               />
             </div>
