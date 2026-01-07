@@ -1,5 +1,8 @@
 import plugin from '@tailwindcss/typography';
 
+/**
+ * @deprecated. We are using tailwind 4 now. This module will be removed in future versions.
+ */
 export default {
   theme: {
     extend: {

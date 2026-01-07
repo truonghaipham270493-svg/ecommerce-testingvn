@@ -48,6 +48,7 @@ export default function Base({
         <Header />
         <main className="content">
           <Area id="content" noOuter />
+          <div className="p-2 bg-primary">Just test tailwind</div>
         </main>
         <Footer copyRight={themeConfig.copyRight} />
       </CartProvider>

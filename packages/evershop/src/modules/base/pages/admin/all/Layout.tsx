@@ -17,6 +17,7 @@ export default function AdminLayout() {
             <Area id="footerLeft" className="footer-left" />
             <Area id="footerRight" className="footer-right" />
           </div>
+          <div className="p-2 bg-primary">Just test tailwind</div>
         </div>
       </div>
     </>
