@@ -6,7 +6,7 @@
 }
 
 @layer base {
-  body.admin {
+  :root {
     --primary: #008060;
     --secondary: #111213;
     --surface: #111213;

@@ -7,8 +7,8 @@ import JSON5 from 'json5';
 import { getComponentsByRoute } from '../../lib/componee/getComponentsByRoute.js';
 import { CONSTANTS } from '../../lib/helpers.js';
 import { error } from '../../lib/log/logger.js';
-import { getRouteBuildPath } from '../../lib/webpack/getRouteBuildPath.js';
 import { generateComponentKey } from '../../lib/util/keyGenerator.js';
+import { getRouteBuildPath } from '../../lib/webpack/getRouteBuildPath.js';
 import { parseGraphql } from '../../lib/webpack/util/parseGraphql.js';
 import { getEnabledWidgets } from '../../lib/widget/widgetManager.js';
 /**
