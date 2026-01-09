@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import JSON5 from 'json5';
 import uniqid from 'uniqid';
+import { getDevMiddleware } from '../../../../bin/lib/devEnvHelper.js';
 import { CONSTANTS } from '../../../../lib/helpers.js';
 import { error } from '../../../../lib/log/logger.js';
 import { getRoutes } from '../../../../lib/router/Router.js';
@@ -19,9 +20,20 @@ export default async (request, response, next) => {
     getContextValue(request, 'dummy', null);
     if (isDevelopmentMode()) {
       const route = request.currentRoute;
-      const devMiddleware = request.app.locals.webpackMiddleware;
+      const devMiddleware = getDevMiddleware(route.isAdmin);
       const { outputFileSystem } = devMiddleware.context;
-      const { jsonWebpackStats } = response.locals;
+
+      // Wait for webpack to be ready
+      await new Promise((resolve) => {
+        devMiddleware.waitUntilValid(() => resolve());
+      });
+
+      const { stats } = devMiddleware.context;
+      if (!stats) {
+        throw new Error('Webpack stats not available');
+      }
+
+      const jsonWebpackStats = stats.toJson();
       const { outputPath } = jsonWebpackStats;
 
       query = outputFileSystem.readFileSync(

@@ -88,6 +88,7 @@ function renderDevelopment(
     isScriptContext: true
   });
   const langCode = request.currentRoute?.isAdmin ? 'en' : language;
+  const scriptPath = route.isAdmin ? '/backend/admin-main.js' : '/main.js';
   response.send(`
             <!doctype html><html lang="${langCode}">
                 <head>
@@ -95,7 +96,7 @@ function renderDevelopment(
                 </head>
                 <body class="${classes}">
                 <div id="app"></div>
-                 <script defer src="/main.js"></script>
+                 <script defer src="${scriptPath}"></script>
                 </body >
             </html >
   `);

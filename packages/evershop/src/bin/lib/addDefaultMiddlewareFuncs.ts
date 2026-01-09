@@ -3,9 +3,6 @@ import sessionStorage from 'connect-pg-simple';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import pathToRegexp from 'path-to-regexp';
-import webpack from 'webpack';
-import middleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
 import { translate } from '../../lib/locale/translate/translate.js';
 import { debug, warning } from '../../lib/log/logger.js';
 import publicStatic from '../../lib/middlewares/publicStatic.js';
@@ -15,13 +12,11 @@ import { getRoutes } from '../../lib/router/Router.js';
 import { getConfig } from '../../lib/util/getConfig.js';
 import isDevelopmentMode from '../../lib/util/isDevelopmentMode.js';
 import isProductionMode from '../../lib/util/isProductionMode.js';
-import { createConfigClient } from '../../lib/webpack/dev/createConfigClient.js';
-import { isBuildRequired } from '../../lib/webpack/isBuildRequired.js';
 import { getAdminSessionCookieName } from '../../modules/auth/services/getAdminSessionCookieName.js';
 import { getCookieSecret } from '../../modules/auth/services/getCookieSecret.js';
 import { getFrontStoreSessionCookieName } from '../../modules/auth/services/getFrontStoreSessionCookieName.js';
 import { setPageMetaInfo } from '../../modules/cms/services/pageMetaInfo.js';
-import { findRoute } from './findRoute.js';
+import { getDevMiddleware, getHotMiddleware } from './devEnvHelper.js';
 
 export function addDefaultMiddlewareFuncs(app) {
   app.use((request, response, next) => {
@@ -172,63 +167,60 @@ export function addDefaultMiddlewareFuncs(app) {
     }
   });
 
-  app.use(async (request, response, next) => {
-    if (!isDevelopmentMode()) {
-      return next();
-    }
-
-    const route = findRoute(request);
-    if (!route || !isBuildRequired(route)) {
-      next();
-    } else {
-      if (!app.locals.webpackCompiler) {
-        app.locals.webpackCompiler = webpack(createConfigClient() as any);
-      }
-      const { webpackCompiler } = app.locals;
-      let middlewareFunc;
-      if (!app.locals.webpackMiddleware) {
-        middlewareFunc = app.locals.webpackMiddleware = middleware(
-          webpackCompiler,
-          {
-            serverSideRender: true,
-            publicPath: '/',
-            stats: 'none'
+  if (isDevelopmentMode()) {
+    // Admin webpack dev middleware - only for /backend/* paths
+    app.use((request, response, next) => {
+      if (request.path.startsWith('/backend/')) {
+        const adminDevMiddleware = getDevMiddleware(true);
+        adminDevMiddleware.waitUntilValid(() => {
+          const { stats } = adminDevMiddleware.context;
+          if (stats) {
+            response.locals.jsonWebpackStats = stats.toJson();
           }
-        );
-        middlewareFunc.context.logger.info = () => {};
+        });
+        adminDevMiddleware(request, response, next);
       } else {
-        middlewareFunc = app.locals.webpackMiddleware;
+        next();
       }
-      middlewareFunc.waitUntilValid(() => {
-        const { stats } = middlewareFunc.context;
-        const jsonWebpackStats = stats.toJson();
-        response.locals.jsonWebpackStats = jsonWebpackStats;
-      });
-
-      middlewareFunc(request, response, next);
-    }
-  });
-  app.use((request, response, next) => {
-    if (!isDevelopmentMode()) {
-      return next();
-    }
-    const route = findRoute(request);
-    request.currentRoute = route;
-    if (!isBuildRequired(route)) {
-      return next();
-    }
-    if (!app.locals.hotMiddleware) {
-      const { webpackCompiler } = app.locals;
-      const hotMiddleware = webpackHotMiddleware(webpackCompiler, {
-        path: `/eHot`
-      });
-      app.locals.hotMiddleware = hotMiddleware;
-    }
-    return app.locals.hotMiddleware(request, response, () => {
-      next();
     });
-  });
 
+    app.use((request, response, next) => {
+      if (request.path.startsWith('/__webpack_hmr_admin')) {
+        const adminHotMiddleware = getHotMiddleware(true);
+        adminHotMiddleware(request, response, next);
+      } else {
+        next();
+      }
+    });
+
+    // Frontstore webpack dev middleware - for all other paths
+    app.use((request, response, next) => {
+      if (
+        !request.path.startsWith('/backend/') &&
+        !request.path.startsWith('/__webpack_hmr_admin')
+      ) {
+        const frontstoreDevMiddleware = getDevMiddleware(false);
+        frontstoreDevMiddleware.waitUntilValid(() => {
+          const { stats } = frontstoreDevMiddleware.context;
+          if (stats) {
+            response.locals.jsonWebpackStats = stats.toJson();
+          }
+        });
+        frontstoreDevMiddleware(request, response, next);
+      } else {
+        next();
+      }
+    });
+
+    app.use((request, response, next) => {
+      if (request.path.startsWith('/__webpack_hmr_frontstore')) {
+        const frontstoreHotMiddleware = getHotMiddleware(false);
+        frontstoreHotMiddleware(request, response, next);
+      } else {
+        next();
+      }
+    });
+  }
   /** 404 Not Found handle */
   app.use((request, response, next) => {
     if (!request.currentRoute) {

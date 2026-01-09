@@ -82,25 +82,35 @@ const buildWidgetComponentsPerRoute = (route, widgets, imports) => {
 };
 
 export default function AreaLoader(c) {
+  const isAdmin = this.getOptions().isAdmin;
   this.cacheable(false);
-  const components = getAllRouteComponents();
-  const routes = getRoutes();
+  const components = getAllRouteComponents(isAdmin);
+  const routes = getRoutes().filter(
+    (route) => route.isApi === false && route.isAdmin === isAdmin
+  );
   const allRootComponents = {};
   const widgets = getEnabledWidgets();
   const imports = new Map(); // This map has a key as an object {id, url} to avoid duplicate imports
-  Object.keys(components).forEach((routeId) => {
-    allRootComponents[routeId] = buildComponentsPerRoute(
-      components[routeId],
-      imports
-    );
-    const route = routes.find((r) => r.id === routeId);
-    const widgetComponents = buildWidgetComponentsPerRoute(
-      route,
-      widgets,
-      imports
-    );
-    Object.assign(allRootComponents[routeId], { '*': widgetComponents });
-  });
+
+  try {
+    Object.keys(components).forEach((routeId) => {
+      allRootComponents[routeId] = buildComponentsPerRoute(
+        components[routeId],
+        imports
+      );
+      const route = routes.find((r) => r.id === routeId);
+      //console.log('building widgets for route', routeId, route);
+      const widgetComponents = buildWidgetComponentsPerRoute(
+        route,
+        widgets,
+        imports
+      );
+      Object.assign(allRootComponents[routeId], { '*': widgetComponents });
+    });
+  } catch (e) {
+    error('Error in AreaLoader:');
+    error(e);
+  }
   const content = `${Array.from(imports.values()).join(
     '\r\n'
   )}\r\nconst components = ${inspect(allRootComponents, { depth: 5 })
