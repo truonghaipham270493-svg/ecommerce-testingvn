@@ -1,6 +1,12 @@
-import { Card } from '@components/admin/Card.js';
 import { CheckboxField } from '@components/common/form/CheckboxField.js';
 import { NumberField } from '@components/common/form/NumberField.js';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@components/common/ui/Card.js';
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -33,8 +39,14 @@ export default function Shipping({ product, setting }: ShippingProps) {
   });
 
   return (
-    <Card title="Shipping" subdued>
-      <Card.Session>
+    <Card>
+      <CardHeader>
+        <CardTitle>Shipping</CardTitle>
+        <CardDescription>
+          Manage the shipping settings of the product.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <CheckboxField
           name="no_shipping_required"
           label="No shipping required?"
@@ -42,8 +54,8 @@ export default function Shipping({ product, setting }: ShippingProps) {
           helperText="Select this option if the product is a digital product or service that does not require shipping."
           wrapperClassName="mb-0"
         />
-      </Card.Session>
-      <Card.Session>
+      </CardContent>
+      <CardContent>
         {!noShippingRequired && (
           <NumberField
             name="weight"
@@ -72,7 +84,7 @@ export default function Shipping({ product, setting }: ShippingProps) {
             helperText={'Weight must be a positive number'}
           />
         )}
-      </Card.Session>
+      </CardContent>
     </Card>
   );
 }

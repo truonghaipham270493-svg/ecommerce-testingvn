@@ -55,16 +55,19 @@ export const DefaultCartItemList: React.FC<CartItemsTableProps> = ({
             <div className="font-medium flex flex-col gap-1 items-start h-full">
               <span className="font-semibold">{row.productName}</span>
               {row.variantOptions?.map((option) => (
-                <span key={option.optionId} className="text-xs text-muted">
-                  {option.attributeName}: {option.optionText}
+                <span key={option.optionId} className="text-xs">
+                  <span>{option.attributeName}</span>:{' '}
+                  <span className="text-muted-foreground">
+                    {option.optionText}
+                  </span>
                 </span>
               ))}
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {priceValue} x {row.qty}
               </span>
               <a
                 href="#"
-                className="text-red-500 text-sm"
+                className="text-destructive text-sm"
                 onClick={(e) => {
                   e.preventDefault();
                   onRemoveItem?.(row.cartItemId);
@@ -73,7 +76,7 @@ export const DefaultCartItemList: React.FC<CartItemsTableProps> = ({
                 {_('Remove')}
               </a>
               {row.errors?.map((error, index) => (
-                <span key={index} className="text-xs text-red-500">
+                <span key={index} className="text-xs text-destructive">
                   {error}
                 </span>
               ))}

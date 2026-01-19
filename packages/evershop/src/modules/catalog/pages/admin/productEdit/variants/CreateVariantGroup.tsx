@@ -116,7 +116,7 @@ export const CreateVariantGroup: React.FC<{
   }
 
   if (error) {
-    return <p className="text-critical">{error.message}</p>;
+    return <p className="text-destructive">{error.message}</p>;
   }
 
   return (

@@ -1,5 +1,5 @@
 import Area from '@components/common/Area.js';
-import Button from '@components/common/Button.js';
+import { Button } from '@components/common/ui/Button.js';
 import React from 'react';
 
 function Name() {

@@ -1,4 +1,3 @@
-import { Card } from '@components/admin/Card.js';
 import { SettingMenu } from '@components/admin/SettingMenu.js';
 import Spinner from '@components/admin/Spinner.js';
 import Area from '@components/common/Area.js';
@@ -8,6 +7,14 @@ import { InputField } from '@components/common/form/InputField.js';
 import { SelectField } from '@components/common/form/SelectField.js';
 import { TelField } from '@components/common/form/TelField.js';
 import { TextareaField } from '@components/common/form/TextareaField.js';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@components/common/ui/Card.js';
+import { Item } from '@components/common/ui/Item.js';
 import React from 'react';
 import { useQuery } from 'urql';
 
@@ -49,12 +56,12 @@ const Province: React.FC<{
 
   if (fetching)
     return (
-      <div>
-        <Spinner />
-      </div>
+      <Item variant={'outline'}>
+        <Spinner width={'1rem'} height={'1rem'} />
+      </Item>
     );
   if (error) {
-    return <p className="text-red-500">{error.message}</p>;
+    return <p className="text-destructive">{error.message}</p>;
   }
   const provinces = data.provinces.filter(
     (p) => p.countryCode === selectedCountry
@@ -100,12 +107,12 @@ const Country: React.FC<{
 
   if (fetching)
     return (
-      <div>
-        <Spinner />
-      </div>
+      <Item variant={'outline'}>
+        <Spinner width={'2rem'} height={'2rem'} />
+      </Item>
     );
   if (error) {
-    return <p className="text-red-500">{error.message}</p>;
+    return <p className="text-destructive">{error.message}</p>;
   }
 
   return (
@@ -198,9 +205,16 @@ export default function StoreSetting({
         <div className="col-span-4">
           <Form method="POST" id="storeSetting" action={saveSettingApi}>
             <Card>
-              <Card.Session title="Store Information">
+              <CardHeader>
+                <CardTitle>Store Settings</CardTitle>
+                <CardDescription>
+                  Configure your store information
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 <Area
                   id="storeInfoSetting"
+                  className="space-y-3"
                   coreComponents={[
                     {
                       component: {
@@ -231,10 +245,10 @@ export default function StoreSetting({
                       sortOrder: 20
                     }
                   ]}
-                  noOuter
                 />
-              </Card.Session>
-              <Card.Session title="Contact Information">
+              </CardContent>
+              <CardContent className="pt-3 border-t border-border">
+                <CardTitle>Contact Information</CardTitle>
                 <Area
                   id="storeContactSetting"
                   coreComponents={[
@@ -259,8 +273,9 @@ export default function StoreSetting({
                   ]}
                   className="grid grid-cols-2 gap-5 mt-5"
                 />
-              </Card.Session>
-              <Card.Session title="Address">
+              </CardContent>
+              <CardContent className="pt-3 border-t border-border">
+                <CardTitle>Address</CardTitle>
                 <Country
                   selectedCountry={storeCountry}
                   setSelectedCountry={setSelectedCountry}
@@ -293,7 +308,7 @@ export default function StoreSetting({
                     />
                   </div>
                 </div>
-              </Card.Session>
+              </CardContent>
             </Card>
           </Form>
         </div>

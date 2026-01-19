@@ -1,4 +1,4 @@
-import { Card } from '@components/admin/Card.js';
+import { Card, CardContent } from '@components/common/ui/Card.js';
 import React from 'react';
 import { CreateVariantGroup } from './CreateVariantGroup.js';
 
@@ -10,7 +10,7 @@ export const New: React.FC<{
   const [action, setAction] = React.useState<'create' | undefined>();
   return (
     <>
-      <Card.Session>
+      <CardContent>
         {action === undefined && (
           <div>
             <div className="justify-center text-center">
@@ -41,11 +41,11 @@ export const New: React.FC<{
             />
           </div>
         )}
-      </Card.Session>
+      </CardContent>
       {action === 'create' && (
-        <Card.Session>
+        <CardContent>
           <a
-            className="text-critical hover:underline"
+            className="text-destructive hover:underline"
             href="#"
             onClick={(e) => {
               e.preventDefault();
@@ -54,7 +54,7 @@ export const New: React.FC<{
           >
             Cancel
           </a>
-        </Card.Session>
+        </CardContent>
       )}
     </>
   );

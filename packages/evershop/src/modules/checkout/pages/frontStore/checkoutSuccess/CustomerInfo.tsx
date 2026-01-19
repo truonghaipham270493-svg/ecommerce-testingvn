@@ -1,5 +1,5 @@
-import Button from '@components/common/Button.js';
 import { AddressSummary } from '@components/common/customer/address/AddressSummary.js';
+import { Button } from '@components/common/ui/Button.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
 import React from 'react';
 
@@ -127,7 +127,14 @@ export default function CustomerInfo({
           </div>
         </div>
       </div>
-      <Button url="/" title={_('CONTINUE SHOPPING')} />
+      <Button
+        variant={'default'}
+        size={'lg'}
+        onClick={() => (window.location.href = '/')}
+        title={_('CONTINUE SHOPPING')}
+      >
+        {_('CONTINUE SHOPPING')}
+      </Button>
     </div>
   );
 }

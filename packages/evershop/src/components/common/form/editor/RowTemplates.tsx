@@ -113,7 +113,7 @@ function RowTemplates({ addRow }: { addRow: (row: any) => void }) {
     )
   };
   return (
-    <div className="row-templates flex justify-center gap-7 border border-divider px-3">
+    <div className="row-templates flex justify-center gap-7 px-3">
       {Object.keys(templates).map((key) => (
         <a
           key={key}

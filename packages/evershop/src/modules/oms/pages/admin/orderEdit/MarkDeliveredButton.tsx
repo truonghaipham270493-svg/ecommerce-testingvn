@@ -1,5 +1,4 @@
-import Button from '@components/common/Button.js';
-import PropTypes from 'prop-types';
+import { Button } from '@components/common/ui/Button.js';
 import React from 'react';
 import { toast } from 'react-toastify';
 
@@ -31,9 +30,8 @@ export default function MarkDeliveredButton({
   } else {
     return (
       <Button
-        title="Mark Delivered"
-        variant="primary"
-        onAction={async () => {
+        variant="default"
+        onClick={async () => {
           // Call the updateShipmentApi with the status set to "delivered" using fetch post request, include credentials
           const response = await fetch(markDeliveredApi, {
             method: 'POST',
@@ -52,7 +50,9 @@ export default function MarkDeliveredButton({
             toast.error(data.error.message);
           }
         }}
-      />
+      >
+        Mark Delivered
+      </Button>
     );
   }
 }

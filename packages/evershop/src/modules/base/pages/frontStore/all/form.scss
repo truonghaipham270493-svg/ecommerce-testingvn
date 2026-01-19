@@ -2,7 +2,7 @@
 
 body.frontStore {
   .required-indicator {
-    @apply text-red-500 ml-1;
+    @apply text-destructive ml-1;
   }
 
   .form-field {

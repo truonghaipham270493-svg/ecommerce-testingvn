@@ -104,7 +104,7 @@
   .uploader
   .uploader-icon
   label {
-  color: #058c8c;
+  color: var(--primary);
 }
 
 .image-uploader-manager .image-list .image {
@@ -114,7 +114,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #e1e1e1;
   background: #fff;
   max-width: 150px;
 }
@@ -183,6 +182,5 @@
 }
 .uploader .uploader-icon label {
   cursor: pointer;
-  font-size: 20px;
-  color: #058c8c;
+  font-size: 18px;
 }

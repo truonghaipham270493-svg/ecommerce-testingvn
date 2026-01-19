@@ -1,11 +1,13 @@
 .product-thumbnail {
   position: relative;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3rem;
+  height: 3rem;
   display: flex;
   justify-content: center;
   border: 1px solid var(--divider);
   border-radius: 3px;
+  padding: 2px;
+  box-sizing: border-box;
   .thumbnail {
     align-self: center;
     color: var(--border);

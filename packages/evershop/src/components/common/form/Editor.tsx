@@ -2,6 +2,7 @@ import { FileBrowser } from '@components/admin/FileBrowser.js';
 import { getColumnClasses } from '@components/common/form/editor/GetColumnClasses.js';
 import { getRowClasses } from '@components/common/form/editor/GetRowClasses.js';
 import { RowTemplates } from '@components/common/form/editor/RowTemplates.js';
+import { Field, FieldLabel } from '@components/common/ui/Field.js';
 import {
   DndContext,
   closestCenter,
@@ -17,7 +18,7 @@ import {
   useSortable,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
-import { XCircleIcon } from '@heroicons/react/24/outline';
+import { CircleX } from 'lucide-react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
@@ -79,12 +80,12 @@ const SortableRow: React.FC<{
 
   return (
     <div
-      className="border row__container mt-5"
+      className="border border-border row__container mt-3 first:mt-0 rounded-md"
       id={row.id}
       ref={setNodeRef}
       style={style}
     >
-      <div className="config p-3 flex justify-between bg-[#cccccc] items-center">
+      <div className="config p-3 flex justify-between bg-muted items-center">
         <div className="drag__icon cursor-move" {...attributes} {...listeners}>
           <svg
             viewBox="0 0 24 24"
@@ -110,7 +111,7 @@ const SortableRow: React.FC<{
               removeRow(row.id);
             }}
           >
-            <XCircleIcon color="#d72c0d" width={20} height={20} />
+            <CircleX width={20} height={20} />
           </a>
         </div>
       </div>
@@ -266,8 +267,8 @@ export const Editor: React.FC<EditorProps> = ({ name, value = [], label }) => {
   };
 
   return (
-    <div className="editor form-field-container">
-      <label htmlFor="description mt-4">{label}</label>
+    <Field className="editor form-field-container">
+      <FieldLabel htmlFor="description mt-4">{label}</FieldLabel>
       <div className="prose prose-xl max-w-none">
         <DndContext
           sensors={sensors}
@@ -319,6 +320,6 @@ export const Editor: React.FC<EditorProps> = ({ name, value = [], label }) => {
           isMultiple={false}
         />
       )}
-    </div>
+    </Field>
   );
 };

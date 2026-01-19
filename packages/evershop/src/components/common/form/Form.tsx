@@ -1,4 +1,4 @@
-import Button from '@components/common/Button.js';
+import { Button } from '@components/common/ui/Button.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
 import React from 'react';
 import {
@@ -117,11 +117,13 @@ export function Form<T extends FieldValues = FieldValues>({
             <Button
               title={submitBtnText}
               type="submit"
-              onAction={() => {
+              onClick={() => {
                 handleSubmit(handleFormSubmit);
               }}
               isLoading={isSubmitting || loading}
-            />
+            >
+              {submitBtnText}
+            </Button>
           </div>
         )}
       </form>

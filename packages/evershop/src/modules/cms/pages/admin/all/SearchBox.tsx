@@ -4,6 +4,13 @@ import { useQuery } from 'urql';
 import { NoResult } from './search/NoResult.js';
 import { Results } from './search/Results.js';
 import './SearchBox.scss';
+import { Input } from '@components/common/ui/Input.js';
+import { Search } from 'lucide-react';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput
+} from '@components/common/ui/InputGroup.js';
 
 const useClickOutside = (ref, callback) => {
   const handleClick = (e) => {
@@ -101,30 +108,17 @@ export default function SearchBox({ resourceLinks }: SearchBoxProps) {
 
   return (
     <div className="search-box max-w-lg">
-      <div className="form-field flex items-center justify-start relative mb-0">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ width: '1rem', height: '1rem' }}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="absolute left-2 pointer-events-none"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
-        <input
+      <InputGroup>
+        <InputGroupAddon>
+          <Search />
+        </InputGroupAddon>
+        <InputGroupInput
           type="text"
           placeholder="Search"
-          className="!pl-7 bg-gray-50 focus:bg-white"
           ref={InputRef}
           onChange={(e) => setKeyword(e.target.value)}
         />
-      </div>
+      </InputGroup>
       {showResult && (
         <div className="search-result" ref={clickRef}>
           {(loading || fetching) && (

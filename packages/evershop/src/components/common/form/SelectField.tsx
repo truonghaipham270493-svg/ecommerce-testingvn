@@ -1,12 +1,21 @@
 import { Tooltip } from '@components/common/form/Tooltip.js';
 import { getNestedError } from '@components/common/form/utils/getNestedError.js';
+import { Field, FieldError, FieldLabel } from '@components/common/ui/Field.js';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@components/common/ui/Select.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
 import React from 'react';
 import {
   useFormContext,
   RegisterOptions,
   FieldPath,
-  FieldValues
+  FieldValues,
+  Controller
 } from 'react-hook-form';
 
 interface SelectOption {
@@ -16,7 +25,10 @@ interface SelectOption {
 }
 
 interface SelectFieldProps<T extends FieldValues = FieldValues>
-  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'name'> {
+  extends Omit<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    'name' | 'size' | 'multiple'
+  > {
   name: FieldPath<T>;
   label?: string;
   error?: string;
@@ -24,7 +36,6 @@ interface SelectFieldProps<T extends FieldValues = FieldValues>
   required?: boolean;
   validation?: RegisterOptions<T>;
   options: SelectOption[];
-  multiple?: boolean;
   placeholder?: string;
   wrapperClassName?: string;
 }
@@ -41,11 +52,10 @@ export function SelectField<T extends FieldValues = FieldValues>({
   wrapperClassName,
   className,
   defaultValue,
-  multiple = false,
   ...props
 }: SelectFieldProps<T>) {
   const {
-    register,
+    control,
     formState: { errors }
   } = useFormContext<T>();
 
@@ -79,54 +89,66 @@ export function SelectField<T extends FieldValues = FieldValues>({
   };
 
   return (
-    <div
-      className={`form-field ${wrapperClassName} ${fieldError ? 'error' : ''}`}
+    <Field
+      data-invalid={fieldError ? 'true' : 'false'}
+      className={wrapperClassName}
     >
       {label && (
-        <label htmlFor={fieldId}>
-          {label}
-          {required && <span className="required-indicator">*</span>}
-          {helperText && <Tooltip content={helperText} position="top" />}
-        </label>
+        <FieldLabel htmlFor={fieldId}>
+          <>
+            {label}
+            {required && <span className="text-destructive">*</span>}
+            {helperText && <Tooltip content={helperText} position="top" />}
+          </>
+        </FieldLabel>
       )}
-
-      <select
-        id={fieldId}
-        {...register(name, validationRules)}
-        className={className}
-        defaultValue={hasDefaultValue ? defaultValue : multiple ? [] : ''}
-        aria-invalid={fieldError !== undefined ? 'true' : 'false'}
-        aria-describedby={
-          fieldError !== undefined
-            ? `${fieldId}-error`
-            : helperText
-            ? `${fieldId}-helper`
-            : undefined
-        }
-        multiple={multiple}
-        {...props}
-      >
-        {placeholder && (
-          <option value="" disabled>
-            {placeholder}
-          </option>
-        )}
-        {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled}
+      <Controller
+        name={name}
+        control={control}
+        rules={validationRules}
+        defaultValue={hasDefaultValue ? defaultValue : ('' as any)}
+        render={({ field }) => (
+          <Select
+            value={String(field.value ?? '')}
+            onValueChange={(value) => {
+              field.onChange(value === '' ? '' : value);
+            }}
           >
-            {option.label}
-          </option>
-        ))}
-      </select>
-
-      {fieldError && (
-        <p id={`${fieldId}-error`} className="field-error">
-          {fieldError}
-        </p>
-      )}
-    </div>
+            <SelectTrigger
+              id={fieldId}
+              className={className}
+              aria-invalid={fieldError !== undefined ? 'true' : 'false'}
+              aria-describedby={
+                fieldError !== undefined ? `${fieldId}-error` : undefined
+              }
+            >
+              <SelectValue>
+                {field.value
+                  ? options.find((o) => String(o.value) === String(field.value))
+                      ?.label
+                  : placeholder}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {placeholder && (
+                <SelectItem value="" disabled>
+                  {placeholder}
+                </SelectItem>
+              )}
+              {options.map((option) => (
+                <SelectItem
+                  key={option.value}
+                  value={String(option.value)}
+                  disabled={option.disabled}
+                >
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      />
+      {fieldError && <FieldError>{fieldError}</FieldError>}
+    </Field>
   );
 }

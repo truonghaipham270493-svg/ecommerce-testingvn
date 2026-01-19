@@ -1,5 +1,6 @@
 import Area from '@components/common/Area.js';
 import { useAppState } from '@components/common/context/app.js';
+import { Skeleton } from '@components/common/ui/Skeleton.js';
 import { useCartState } from '@components/frontStore/cart/CartContext.js';
 import { CouponForm } from '@components/frontStore/CouponForm.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
@@ -17,7 +18,7 @@ const SkeletonValue: React.FC<{
   return (
     <span className={`relative ${className}`}>
       <span className="opacity-0">{children}</span>
-      <span className="absolute inset-0 bg-gray-200 rounded animate-pulse" />
+      <Skeleton className="absolute top-0 left-0 w-full h-full" />
     </span>
   );
 };

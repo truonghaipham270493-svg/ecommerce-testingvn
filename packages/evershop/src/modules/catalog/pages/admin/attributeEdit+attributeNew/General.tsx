@@ -1,7 +1,13 @@
-import { Card } from '@components/admin/Card.js';
 import Spinner from '@components/admin/Spinner.jsx';
 import { InputField } from '@components/common/form/InputField.js';
 import { RadioGroupField } from '@components/common/form/RadioGroupField.js';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@components/common/ui/Card.js';
 import React from 'react';
 import { useFormContext, Controller, useFieldArray } from 'react-hook-form';
 import Select from 'react-select';
@@ -37,6 +43,7 @@ interface Group {
     }[];
   };
 }
+
 const Groups: React.FC<{ groups: Group[]; createGroupApi: string }> = ({
   groups,
   createGroupApi
@@ -82,7 +89,7 @@ const Groups: React.FC<{ groups: Group[]; createGroupApi: string }> = ({
       </div>
     );
   if (error) {
-    return <p className="text-red-500">{error.message}</p>;
+    return <p className="text-destructive">{error.message}</p>;
   }
 
   return (
@@ -148,7 +155,9 @@ const Groups: React.FC<{ groups: Group[]; createGroupApi: string }> = ({
               </button>
             </div>
             {createGroupError && (
-              <p className="text-red-500 text-xs mt-1">{createGroupError}</p>
+              <p className="text-destructive text-xs mt-1">
+                {createGroupError}
+              </p>
             )}
           </div>
         </div>
@@ -197,13 +206,8 @@ const Options: React.FC<{
                 name={`options.${index}.option_text`}
                 placeholder="Option text"
                 validation={{ required: 'Option text is required' }}
-                wrapperClassName="form-field mb-0"
               />
-              <InputField
-                type="hidden"
-                name={`options.${index}.option_id`}
-                wrapperClassName="form-field mb-0"
-              />
+              <InputField type="hidden" name={`options.${index}.option_id`} />
             </div>
             <div className="self-center">
               <button
@@ -212,7 +216,7 @@ const Options: React.FC<{
                   e.preventDefault();
                   remove(index);
                 }}
-                className="text-red-500 hover:underline"
+                className="text-destructive hover:underline"
               >
                 Remove option
               </button>
@@ -255,12 +259,17 @@ interface GeneralProps {
 }
 
 export default function General({ attribute, createGroupApi }: GeneralProps) {
-  const { register } = useFormContext();
-  const [type, setType] = React.useState(attribute?.type || 'text');
+  const [type] = React.useState(attribute?.type || 'text');
 
   return (
-    <Card title="General">
-      <Card.Session>
+    <Card>
+      <CardHeader>
+        <CardTitle>General</CardTitle>
+        <CardDescription>
+          Manage the general information of the attribute.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <div className="space-y-2">
           <InputField
             name="attribute_name"
@@ -300,18 +309,18 @@ export default function General({ attribute, createGroupApi }: GeneralProps) {
             </div>
           </div>
         </div>
-      </Card.Session>
+      </CardContent>
       {['select', 'multiselect'].includes(type) && (
-        <Card.Session title="Attribute options">
+        <CardContent title="Attribute options">
           <Options originOptions={get(attribute, 'options', [])} />
-        </Card.Session>
+        </CardContent>
       )}
-      <Card.Session title="Attribute Group">
+      <CardContent title="Attribute Group">
         <Groups
           groups={get(attribute, 'groups.items', [])}
           createGroupApi={createGroupApi}
         />
-      </Card.Session>
+      </CardContent>
     </Card>
   );
 }

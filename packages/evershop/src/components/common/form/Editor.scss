@@ -12,7 +12,6 @@ body .codex-editor {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px;
     border-radius: 4px;
 
     &:hover {
@@ -23,10 +22,6 @@ body .codex-editor {
       display: block; // Prevent extra space below svg
     }
   }
-}
-
-#rows > * {
-  margin-top: 10px;
 }
 
 .item {

@@ -1,6 +1,7 @@
 import { Image } from '@components/common/Image.js';
+import { Input } from '@components/common/ui/Input.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { Search, X } from 'lucide-react';
 import React, { useRef, useState, ReactNode, useCallback } from 'react';
 import { useClient } from 'urql';
 
@@ -247,24 +248,9 @@ export function SearchBox({
     }, 150);
   }, []);
 
-  const defaultSearchIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ width: '1.5rem', height: '1.5rem' }}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    </svg>
-  );
+  const defaultSearchIcon = () => <Search className="w-5 h-5 text-primary" />;
 
-  const defaultCloseIcon = () => <XMarkIcon width="1.5rem" height="1.5rem" />;
+  const defaultCloseIcon = () => <X className="w-5 h-5 text-primary" />;
 
   return (
     <div className="search__box">
@@ -343,22 +329,8 @@ const defaultSearchInput = (props: {
   ref: React.RefObject<HTMLInputElement | null>;
 }) => (
   <div className="form__field flex items-center justify-center relative flex-grow">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ width: '1rem', height: '1rem' }}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      className="absolute left-2 pointer-events-none"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    </svg>
-    <input
+    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+    <Input
       ref={props.ref}
       placeholder={props.placeholder}
       value={props.value}
@@ -367,7 +339,7 @@ const defaultSearchInput = (props: {
       onFocus={props.onFocus}
       onBlur={props.onBlur}
       enterKeyHint="done"
-      className="pl-8 p-3 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      className="w-full focus:outline-none"
     />
   </div>
 );
