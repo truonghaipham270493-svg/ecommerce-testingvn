@@ -26,7 +26,15 @@ export default {
         return [];
       }
       try {
-        return JSON.parse(description);
+        //return JSON.parse(description);
+        const replacements = {
+          '&lt;': '<',
+          '&gt;': '>'
+        };
+        const jsonText = description
+          ? description.replace(/&lt;|&gt;/g, (match) => replacements[match])
+          : '[]';
+        return JSON.parse(jsonText);
       } catch (e) {
         // This is for backward compatibility. If the description is not a JSON string then it is a raw HTML block
         const rowId = `r__${uuidv4()}`;
