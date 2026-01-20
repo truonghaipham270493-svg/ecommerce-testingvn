@@ -23,7 +23,7 @@ export const EditVariant: React.FC<{
       <Dialog>
         <DialogTrigger>
           <Button variant={'link'} className={'hover:cursor-pointer'}>
-            <Cog className="w-5 h-5" />
+            <Cog className="w-5 h-5 text-primary" />
           </Button>
         </DialogTrigger>
         <DialogContent className={'sm:max-w-212.5'}>

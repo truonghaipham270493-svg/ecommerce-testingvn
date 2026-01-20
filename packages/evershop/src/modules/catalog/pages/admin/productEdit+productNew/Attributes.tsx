@@ -256,7 +256,7 @@ export default function Attributes({
                   <TableCell>
                     <span>{attribute.attribute_name}</span>
                     {attribute.is_required === 1 && (
-                      <span className="text-destructive pl-2">*</span>
+                      <span className="text-destructive pl-1">*</span>
                     )}
                   </TableCell>
                   <TableCell>

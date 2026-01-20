@@ -19,10 +19,10 @@ export const CreateVariant: React.FC<{
   return (
     <div className="mt-3">
       <Dialog>
-        <DialogTrigger asChild>
-          <Button>Add Variant</Button>
+        <DialogTrigger>
+          <Button variant={'outline'}>Add Variant</Button>
         </DialogTrigger>
-        <DialogContent className={'sm:max-w-[850px]'}>
+        <DialogContent className={'sm:max-w-212.5'}>
           <DialogHeader>
             <DialogTitle>New Variant</DialogTitle>
             <DialogDescription>

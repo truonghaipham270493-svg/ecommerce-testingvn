@@ -28,13 +28,13 @@ export default function Collections({
           Manage the collections associated with this product.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-2">
         {collections.map((collection) => (
           <div
             className="flex justify-start gap-2 items-center align-middle"
             key={collection.uuid}
           >
-            <TagIcon width={16} height={16} className="fill-primary" />
+            <TagIcon width={16} height={16} />
             <a href={collection.editUrl} className="hover:underline">
               <span>{collection.name}</span>
             </a>

@@ -66,6 +66,7 @@ export function ReactSelectField<T extends FieldValues = FieldValues>({
     <Field
       data-invalid={fieldError ? 'true' : 'false'}
       className={wrapperClassName}
+      id={`field-${name}`}
     >
       {label && (
         <FieldLabel htmlFor={fieldId}>

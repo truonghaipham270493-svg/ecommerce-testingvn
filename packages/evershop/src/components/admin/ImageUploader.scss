@@ -95,8 +95,9 @@
 /* When there's no image yet in single mode */
 .image-uploader-manager .single-image-container.no-image .uploader {
   opacity: 1;
+  border-radius: var(--radius);
   background: #f5f5f5;
-  border: 2px dashed #e1e1e1;
+  border: 2px dashed var(--border);
 }
 
 .image-uploader-manager
@@ -124,7 +125,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px dashed #e1e1e1;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
   background: #fff;
   max-width: 150px;
 }
