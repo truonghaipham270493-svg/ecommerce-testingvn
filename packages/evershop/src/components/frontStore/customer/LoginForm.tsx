@@ -5,7 +5,7 @@ import { PasswordField } from '@components/common/form/PasswordField.js';
 import { Button } from '@components/common/ui/Button.js';
 import { useCustomerDispatch } from '@components/frontStore/customer/CustomerContext.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
-import { cn } from '@evershop/evershop/lib/util/cn.js';
+import { cn } from '@evershop/evershop/lib/util/cn';
 import { LockKeyhole, Mail } from 'lucide-react';
 import React from 'react';
 

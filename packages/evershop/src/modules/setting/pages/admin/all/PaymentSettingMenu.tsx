@@ -6,7 +6,7 @@ import {
   ItemDescription,
   ItemTitle
 } from '@components/common/ui/Item.js';
-import { cn } from '@evershop/evershop/lib/util/cn.js';
+import { cn } from '@evershop/evershop/lib/util/cn';
 import { Cog, Settings } from 'lucide-react';
 import React from 'react';
 
