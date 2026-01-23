@@ -10,6 +10,7 @@ import deleteCustomer from './customer/deleteCustomer.js';
 import updateCustomer from './customer/updateCustomer.js';
 import updatePassword from './customer/updatePassword.js';
 import { getCustomersBaseQuery } from './getCustomersBaseQuery.js';
+import { sendResetPasswordEmail } from './sendResetPasswordEmail.js';
 
 export {
   getCustomersBaseQuery,
@@ -21,5 +22,6 @@ export {
   deleteCustomer,
   updatePassword,
   validateAddress,
-  addAddressValidationRule
+  addAddressValidationRule,
+  sendResetPasswordEmail
 };

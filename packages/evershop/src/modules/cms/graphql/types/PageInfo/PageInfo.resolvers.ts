@@ -9,12 +9,17 @@ import { getBaseUrl } from '../../../../../lib/util/getBaseUrl.js';
 import { getConfig } from '../../../../../lib/util/getConfig.js';
 import { getValueSync } from '../../../../../lib/util/registry.js';
 import { OgInfo } from '../../../../../types/pageMeta.js';
+import { getSetting } from '../../../../setting/services/setting.js';
 
 export default {
   Query: {
-    pageInfo: (root, args, context) => ({
+    pageInfo: async (root, args, context) => ({
       url: get(context, 'currentUrl'),
-      title: get(context, 'pageInfo.title', getConfig('shop.name', 'Evershop')),
+      title: get(
+        context,
+        'pageInfo.title',
+        await getSetting('storeName', 'Evershop')
+      ),
       description: get(context, 'pageInfo.description', ''),
       keywords: get(context, 'pageInfo.keywords', []),
       canonicalUrl: get(
