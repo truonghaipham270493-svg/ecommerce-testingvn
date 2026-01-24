@@ -1,7 +1,6 @@
 import { access } from 'fs/promises';
 import path from 'path';
 import { select } from '@evershop/postgres-query-builder';
-import { normalizePort } from '../../../../../bin/lib/normalizePort.js';
 import { CONSTANTS } from '../../../../../lib/helpers.js';
 import { translate } from '../../../../../lib/locale/translate/translate.js';
 import { get } from '../../../../../lib/util/get.js';
@@ -111,10 +110,9 @@ export default {
         return breadcrumbs;
       }
     },
-    ogInfo: (root, args, context): OgInfo => {
-      let logo = getConfig<string>('themeConfig.logo.src');
-      const port = normalizePort();
-      const baseUrl = getConfig('shop.homeUrl', `http://localhost:${port}`);
+    ogInfo: async (root, args, context): Promise<OgInfo> => {
+      let logo = getConfig('themeConfig.logo.src');
+      const baseUrl = getBaseUrl();
       // Check if logo is a full URL
       // If logo is not set, use default /images/logo.png
       if (logo && !logo.startsWith('http')) {
@@ -149,12 +147,12 @@ export default {
           twitterSite: get(
             context,
             'pageInfo.ogInfo.twitterSite',
-            getConfig('shop.name', 'Evershop')
+            await getSetting('storeName', 'Evershop')
           ),
           twitterCreator: get(
             context,
             'pageInfo.ogInfo.twitterCreator',
-            getConfig('shop.name', 'Evershop')
+            await getSetting('storeName', 'Evershop')
           ),
           twitterImage: get(context, 'pageInfo.ogInfo.twitterImage', image)
         },
