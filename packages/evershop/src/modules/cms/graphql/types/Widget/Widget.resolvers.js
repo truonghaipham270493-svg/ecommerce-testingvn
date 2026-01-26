@@ -1,5 +1,7 @@
 import { select } from '@evershop/postgres-query-builder';
+import sanitizeHtml from 'sanitize-html';
 import uniqid from 'uniqid';
+import { error } from '../../../../../lib/log/logger.js';
 import { buildUrl } from '../../../../../lib/router/buildUrl.js';
 import { camelCase } from '../../../../../lib/util/camelCase.js';
 import { getEnabledWidgets } from '../../../../../lib/widget/widgetManager.js';
@@ -49,14 +51,39 @@ export default {
         : null;
     },
     textWidget(_, { text, className }) {
-      const replacements = {
-        '&lt;': '<',
-        '&gt;': '>'
-      };
-      const jsonText = text
-        ? text.replace(/&lt;|&gt;/g, (match) => replacements[match])
-        : '[]';
-      return { text: JSON.parse(jsonText), className };
+      try {
+        if (!text) {
+          return { text: [], className };
+        }
+        const json = JSON.parse(text);
+        // Loop through each row and find the columns with raw block type. Use dompurify to sanitize the HTML content.
+        json.forEach((row) => {
+          row.columns.forEach((column) => {
+            column.data.blocks.forEach((block) => {
+              if (block.type === 'raw' && block.data.html) {
+                const replacements = {
+                  '&lt;': '<',
+                  '&gt;': '>'
+                };
+                const jsonText = block.data.html
+                  ? block.data.html.replace(
+                      /&lt;|&gt;/g,
+                      (match) => replacements[match]
+                    )
+                  : '';
+                block.data.html = sanitizeHtml(jsonText);
+              }
+            });
+          });
+        });
+        return {
+          text: json,
+          className
+        };
+      } catch (e) {
+        error(e);
+        return { text: [], className };
+      }
     },
     bannerWidget(_, { src, alignment, width, height, alt }) {
       return { src, alignment, width, height, alt };
