@@ -1,10 +1,12 @@
 import { Area } from '@components/common/Area.js';
+import { Button } from '@components/common/ui/Button.js';
 import { CartData } from '@components/frontStore/cart/CartContext.js';
 import { CartItems } from '@components/frontStore/cart/CartItems.js';
 import { CartTotalSummary } from '@components/frontStore/cart/CartTotalSummary.js';
 import { DefaultMiniCartDropdownEmpty } from '@components/frontStore/cart/DefaultMiniCartDropdownEmpty.js';
 import { DefaultMiniCartItemList } from '@components/frontStore/cart/DefaultMiniCartItemList.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
+import { CircleX } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
 
 export const DefaultMiniCartDropdown: React.FC<{
@@ -74,23 +76,10 @@ export const DefaultMiniCartDropdown: React.FC<{
             type="button"
             ref={closeButtonRef}
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 rounded-full p-1"
+            className="text-base focus:outline-none p-1"
             aria-label={_('Close cart')}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CircleX className="w-6 h-6" />
           </button>
         </div>
         {totalQty === 0 ? (
@@ -121,19 +110,20 @@ export const DefaultMiniCartDropdown: React.FC<{
                       {total || '—'}
                     </span>
                   </div>
-                  <button
-                    type="button"
+                  <Button
+                    variant={'outline'}
+                    size={'lg'}
                     onClick={() => {
                       if (cartUrl) {
                         window.location.href = cartUrl;
                       }
                     }}
-                    className="minicart__viewcart__button w-full bg-primary text-white py-4 px-4 rounded-full hover:bg-blue-700 transition-colors font-medium"
+                    className="minicart__viewcart__button w-full "
                   >
                     {_('View Cart (${totalQty})', {
                       totalQty: totalQty.toString()
                     })}
-                  </button>
+                  </Button>
                 </>
               )}
             </CartTotalSummary>

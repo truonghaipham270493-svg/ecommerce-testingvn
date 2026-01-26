@@ -1,3 +1,4 @@
+import { TableCell } from '@components/common/ui/Table.js';
 import React from 'react';
 import { ItemVariantOptions } from './ItemVariantOptions.js';
 
@@ -18,7 +19,7 @@ export function Name({
   variantOptions = []
 }: NameProps) {
   return (
-    <td>
+    <TableCell>
       <div className="product-column">
         <div>
           <span className="font-semibold">
@@ -31,6 +32,6 @@ export function Name({
         </div>
         <ItemVariantOptions options={variantOptions} />
       </div>
-    </td>
+    </TableCell>
   );
 }

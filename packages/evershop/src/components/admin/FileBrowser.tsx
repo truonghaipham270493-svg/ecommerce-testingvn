@@ -1,8 +1,9 @@
-import Button from '@components/common/Button.js';
+import { Button } from '@components/common/ui/Button.js';
 import React from 'react';
 import './FileBrowser.scss';
 import { useQuery } from 'urql';
 import Spinner from '@components/admin/Spinner.js';
+import { Input } from '@components/common/ui/Input.js';
 
 const GetApisQuery = `
   query Query ($filters: [FilterInput!]) {
@@ -278,7 +279,7 @@ const FileBrowser: React.FC<{
   const { data, fetching, error: err } = result;
   if (err) {
     return (
-      <p className="text-critical">
+      <p className="text-destructive">
         There was an error fetching file browser APIs.
         {err.message}
       </p>
@@ -336,7 +337,7 @@ const FileBrowser: React.FC<{
                       <a
                         href="#"
                         onClick={(e) => onSelectFolderFromBreadcrumb(e, 0)}
-                        className="text-interactive hover:underline"
+                        className="text-primary hover:underline"
                       >
                         Root
                       </a>
@@ -345,7 +346,7 @@ const FileBrowser: React.FC<{
                       <div key={index}>
                         <span>/</span>
                         <a
-                          className="text-interactive hover:underline"
+                          className="text-primary hover:underline"
                           href="#"
                           onClick={(e) =>
                             onSelectFolderFromBreadcrumb(e, f.index)
@@ -361,7 +362,7 @@ const FileBrowser: React.FC<{
                   {folders.map((f, i) => (
                     <li
                       key={i}
-                      className="text-interactive fill-current flex list-group-item"
+                      className="text-primary fill-current flex list-group-item"
                     >
                       <svg
                         style={{ width: '2rem', height: '2rem' }}
@@ -393,52 +394,51 @@ const FileBrowser: React.FC<{
                     </li>
                   )}
                 </ul>
-                <div className=" justify-between">
-                  <div className="form-field mb-0">
-                    <input
-                      type="text"
-                      placeholder="New folder"
-                      ref={newFolderRefInput}
-                    />
-                  </div>
-                  <div className="mt-2">
-                    <a
-                      href="#"
-                      onClick={(e) =>
-                        createFolder(e, newFolderRefInput.current?.value)
-                      }
-                      className="text-interactive hover:underline"
-                    >
-                      Create
-                    </a>
-                  </div>
+                <div className="justify-start items-center gap-2 flex">
+                  <Input
+                    type="text"
+                    placeholder="New folder"
+                    ref={newFolderRefInput}
+                  />
+                  <Button
+                    onClick={(e) =>
+                      createFolder(e, newFolderRefInput.current?.value)
+                    }
+                    variant={'outline'}
+                  >
+                    Create
+                  </Button>
                 </div>
               </div>
               <div className="col-span-3">
-                <div className="error text-critical mb-5">{error}</div>
+                <div className="error text-destructive mb-5">{error}</div>
                 <div className="tool-bar grid grid-cols-3 gap-2 mb-5">
                   <Button
-                    variant="danger"
-                    outline
+                    variant="destructive"
                     title="Delete image"
-                    onAction={() => deleteFile()}
-                  />
+                    onClick={() => deleteFile()}
+                  >
+                    Delete
+                  </Button>
                   <Button
-                    variant="primary"
+                    variant="default"
                     title="Insert image"
-                    onAction={() => insertFile()}
-                  />
+                    onClick={() => insertFile()}
+                  >
+                    Insert
+                  </Button>
                   <Button
-                    title="Upload image"
-                    variant="secondary"
-                    onAction={() => {
+                    variant="outline"
+                    onClick={() => {
                       (
                         document.getElementById(
                           'upload-image'
                         ) as HTMLInputElement
                       ).click();
                     }}
-                  />
+                  >
+                    Upload
+                  </Button>
                   <label
                     className="self-center"
                     id="upload-image-label"

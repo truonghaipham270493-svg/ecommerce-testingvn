@@ -1,3 +1,4 @@
+import { Button } from '@components/common/ui/Button.js';
 import { useCheckout } from '@components/frontStore/checkout/CheckoutContext.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
 import React from 'react';
@@ -48,7 +49,7 @@ export function CheckoutButton() {
     );
   }
   return (
-    <div className="checkout-button-section">
+    <div className="checkout-button-section mt-6">
       {selectedPaymentMethod && selectedComponent?.checkoutButtonRenderer ? (
         // Render the custom checkout button for the selected payment method
         renderComponent(selectedComponent.checkoutButtonRenderer, {
@@ -56,15 +57,17 @@ export function CheckoutButton() {
         })
       ) : (
         // Default checkout button when no payment method is selected or no custom button
-        <button
+        <Button
+          variant={'outline'}
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          size={'xl'}
+          className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!selectedPaymentMethod}
         >
           {selectedPaymentMethod
             ? _('Complete Order')
             : _('Select a payment method')}
-        </button>
+        </Button>
       )}
     </div>
   );

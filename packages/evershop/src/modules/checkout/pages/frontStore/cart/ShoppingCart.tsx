@@ -1,5 +1,5 @@
 import Area from '@components/common/Area.js';
-import Button from '@components/common/Button.js';
+import { Button } from '@components/common/ui/Button.js';
 import { useCartState } from '@components/frontStore/cart/CartContext.js';
 import { CartItems } from '@components/frontStore/cart/CartItems.js';
 import { CartTotalSummary } from '@components/frontStore/cart/CartTotalSummary.js';
@@ -52,10 +52,14 @@ export default function ShoppingCart({ checkoutUrl }: ShoppingCartProps) {
               <Area id="shoppingCartBeforeCheckoutButton" noOuter />
               <div className="shopping-cart-checkout-btn flex justify-between mt-5">
                 <Button
-                  url={checkoutUrl}
+                  onClick={() => (window.location.href = checkoutUrl)}
                   title={_('CHECKOUT')}
-                  variant="primary"
-                />
+                  variant="default"
+                  size={'lg'}
+                  className={'w-full'}
+                >
+                  {_('CHECKOUT')}
+                </Button>
               </div>
               <Area id="shoppingCartAfterSummary" noOuter />
             </div>

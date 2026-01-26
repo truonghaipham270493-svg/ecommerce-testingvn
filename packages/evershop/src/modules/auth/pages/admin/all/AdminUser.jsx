@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { toast } from 'react-toastify';
-import './AdminUser.scss';
 
 export default function AdminUser({ adminUser, logoutUrl, loginPage }) {
   const [showLogout, setShowLogout] = React.useState(false);
@@ -30,21 +29,25 @@ export default function AdminUser({ adminUser, logoutUrl, loginPage }) {
   }
   const { fullName } = adminUser;
   return (
-    <div className="admin-user flex flex-grow justify-end items-center">
+    <div className="admin-user flex grow justify-end items-center">
       <div className="flex justify-items-start gap-2 justify-center">
         <div className="relative">
-          <a className="first-letter" href="#" onClick={(e) => show(e)}>
+          <a
+            className="w-[2.188rem] h-[2.188rem] flex items-center justify-center rounded-full bg-primary/45 font-semibold border-[3px] border-primary"
+            href="#"
+            onClick={(e) => show(e)}
+          >
             {fullName[0]}
           </a>
           {showLogout && (
-            <div className="logout bg-background shadow p-5">
+            <div className="absolute right-0 top-[115%] w-57.5 bg-background shadow p-5 rounded-md z-50">
               <div>
                 <div>
                   Hello <span className="text-primary">{fullName}!</span>
                 </div>
                 <div className="mt-2">
                   <a
-                    className="text-critical"
+                    className="text-destructive"
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();

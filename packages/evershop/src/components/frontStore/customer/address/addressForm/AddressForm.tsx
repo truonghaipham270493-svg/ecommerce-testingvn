@@ -40,6 +40,7 @@ export function CustomerAddressForm({
   return (
     <Area
       id={areaId}
+      className="space-y-3"
       coreComponents={[
         {
           component: {

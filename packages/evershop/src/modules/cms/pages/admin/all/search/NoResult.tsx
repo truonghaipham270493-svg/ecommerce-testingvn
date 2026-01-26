@@ -1,4 +1,3 @@
-import { Dot } from '@components/admin/Dot.js';
 import React from 'react';
 
 interface NoResultProps {
@@ -24,7 +23,6 @@ export function NoResult({ keyword = '', resourseLinks = [] }: NoResultProps) {
             key={index}
             className="flex space-x-2 justify-center items-center"
           >
-            <Dot variant="info" />
             <a href={link.url} className="text-divider hover:underline">
               {link.name}
             </a>

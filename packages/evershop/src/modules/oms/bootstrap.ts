@@ -38,9 +38,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         isDefault: {
                           type: 'boolean'
                         },
@@ -48,7 +45,7 @@ export default () => {
                           type: 'boolean'
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     }
                   },
                   additionalProperties: false
@@ -65,9 +62,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         isDefault: {
                           type: 'boolean'
                         },
@@ -75,7 +69,7 @@ export default () => {
                           type: 'boolean'
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     }
                   },
                   additionalProperties: false
@@ -92,9 +86,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         isDefault: {
                           type: 'boolean'
                         },
@@ -105,7 +96,7 @@ export default () => {
                           }
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     },
                     processing: {
                       type: 'object',
@@ -116,9 +107,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         next: {
                           type: 'array',
                           items: {
@@ -126,7 +114,7 @@ export default () => {
                           }
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     },
                     completed: {
                       type: 'object',
@@ -137,9 +125,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         next: {
                           type: 'array',
                           items: {
@@ -147,7 +132,7 @@ export default () => {
                           }
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     },
                     canceled: {
                       type: 'object',
@@ -158,9 +143,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         next: {
                           type: 'array',
                           items: {
@@ -168,7 +150,7 @@ export default () => {
                           }
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     },
                     closed: {
                       type: 'object',
@@ -179,9 +161,6 @@ export default () => {
                         badge: {
                           type: 'string'
                         },
-                        progress: {
-                          type: 'string'
-                        },
                         next: {
                           type: 'array',
                           items: {
@@ -189,7 +168,7 @@ export default () => {
                           }
                         }
                       },
-                      required: ['name', 'badge', 'progress']
+                      required: ['name', 'badge']
                     }
                   },
                   additionalProperties: true
@@ -239,30 +218,25 @@ export default () => {
         pending: {
           name: 'Pending',
           badge: 'default',
-          progress: 'incomplete',
           isDefault: true
         },
         processing: {
           name: 'Processing',
           badge: 'default',
-          progress: 'incomplete',
           isDefault: false
         },
         shipped: {
           name: 'Shipped',
-          badge: 'attention',
-          progress: 'complete'
+          badge: 'warning'
         },
         delivered: {
           name: 'Delivered',
           badge: 'success',
-          progress: 'complete',
           isCancelable: false
         },
         canceled: {
           name: 'Canceled',
-          badge: 'critical',
-          progress: 'complete',
+          badge: 'destructive',
           isCancelable: false
         }
       },
@@ -270,20 +244,17 @@ export default () => {
         pending: {
           name: 'Pending',
           badge: 'default',
-          progress: 'incomplete',
           isDefault: true,
           isCancelable: true
         },
         paid: {
           name: 'Paid',
           badge: 'success',
-          progress: 'complete',
           isCancelable: false
         },
         canceled: {
           name: 'Canceled',
-          badge: 'critical',
-          progress: 'complete',
+          badge: 'destructive',
           isCancelable: true
         }
       },
@@ -291,32 +262,27 @@ export default () => {
         new: {
           name: 'New',
           badge: 'default',
-          progress: 'incomplete',
           isDefault: true,
           next: ['processing', 'canceled']
         },
         processing: {
           name: 'Processing',
           badge: 'default',
-          progress: 'incomplete',
           next: ['completed', 'canceled']
         },
         completed: {
           name: 'Completed',
           badge: 'success',
-          progress: 'complete',
           next: ['closed']
         },
         canceled: {
           name: 'Canceled',
-          badge: 'critical',
-          progress: 'complete',
+          badge: 'destructive',
           next: []
         },
         closed: {
           name: 'Closed',
-          badge: 'default',
-          progress: 'complete',
+          badge: 'outline',
           next: []
         }
       },

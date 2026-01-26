@@ -39,7 +39,7 @@ const CartSummaryItemsList: React.FC<{
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-muted-foreground">
         <p className="text-base">{_('Your cart is empty')}</p>
         <p className="text-sm mt-2">{_('Add some items to get started')}</p>
       </div>
@@ -47,7 +47,7 @@ const CartSummaryItemsList: React.FC<{
   }
 
   return (
-    <ul className="item__summary__list divide-y divide-gray-200 border-b mb-3">
+    <ul className="item__summary__list divide-y divide-divider mb-3">
       {items.map((item) => (
         <li key={item.uuid} className="flex items-start py-3">
           <div className="relative mr-4 self-center">
@@ -57,13 +57,13 @@ const CartSummaryItemsList: React.FC<{
                 height={100}
                 src={item.thumbnail}
                 alt={item.productName}
-                className="w-16 h-16 object-cover rounded border p-2 box-border"
+                className="w-16 h-16 object-cover rounded border border-border p-2 box-border"
               />
             )}
             {!item.thumbnail && (
-              <ProductNoThumbnail className="w-16 h-16 rounded border p-2 box-border" />
+              <ProductNoThumbnail className="w-16 h-16 rounded border border-border p-2 box-border" />
             )}
-            <span className="absolute -top-2 -right-2 bg-gray-200 rounded-full w-6 h-6 flex items-center justify-center text-gray-700 text-sm">
+            <span className="absolute -top-2 -right-2 bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm">
               {item.qty}
             </span>
           </div>
@@ -72,11 +72,11 @@ const CartSummaryItemsList: React.FC<{
             {item.variantOptions && item.variantOptions.length > 0 && (
               <div className="space-y-1">
                 {item.variantOptions.map((option) => (
-                  <div
-                    key={option.attributeCode}
-                    className="text-xs text-gray-700"
-                  >
-                    {option.attributeName}: {option.optionText}
+                  <div key={option.attributeCode} className="text-xs">
+                    <span>{option.attributeName}</span>:{' '}
+                    <span className="text-muted-foreground">
+                      {option.optionText}
+                    </span>
                   </div>
                 ))}
               </div>

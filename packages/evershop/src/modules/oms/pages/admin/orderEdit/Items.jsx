@@ -1,30 +1,37 @@
-import { Circle } from '@components/admin/Circle.js';
 import Area from '@components/common/Area';
+import { Circle } from '@components/common/ui/Circle.js';
 import PropTypes from 'prop-types';
 import React from 'react';
 import './Items.scss';
-import { Card } from '@components/admin/Card';
+import { Card } from '@components/common/ui/Card';
 import { Name } from './items/Name.js';
 import { Price } from './items/Price.js';
 import { Thumbnail } from './items/Thumbnail.js';
+import { Table, TableBody, TableRow } from '@components/common/ui/Table.js';
+import {
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@components/common/ui/Card.js';
 
 export default function Items({ order: { items, shipmentStatus } }) {
   return (
-    <Card
-      title={
-        <div className="flex space-x-2">
-          <Circle variant={shipmentStatus.badge || 'new'} />
-          <span className="block self-center">
-            {shipmentStatus.name || 'Unknown'}
-          </span>
-        </div>
-      }
-    >
-      <Card.Session>
-        <table className="listing order-items">
-          <tbody>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <div className="flex space-x-2">
+            <Circle variant={shipmentStatus.badge || 'new'} />
+            <span className="block self-center">
+              {shipmentStatus.name || 'Unknown'}
+            </span>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableBody>
             {items.map((i, k) => (
-              <tr key={k}>
+              <TableRow key={k}>
                 <Area
                   key={k}
                   id={`order_item_row_${i.id}`}
@@ -65,16 +72,16 @@ export default function Items({ order: { items, shipmentStatus } }) {
                     }
                   ]}
                 />
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </Card.Session>
-      <Card.Session>
+          </TableBody>
+        </Table>
+      </CardContent>
+      <CardContent>
         <div className="flex justify-end gap-2">
           <Area id="order_actions" noOuter />
         </div>
-      </Card.Session>
+      </CardContent>
     </Card>
   );
 }
@@ -111,7 +118,6 @@ Items.propTypes = {
     shipmentStatus: PropTypes.shape({
       code: PropTypes.string,
       badge: PropTypes.string,
-      progress: PropTypes.string,
       name: PropTypes.string
     }),
     shipment: PropTypes.shape({
@@ -142,7 +148,6 @@ export const query = `
       shipmentStatus {
         code
         badge
-        progress
         name
       }
       items {

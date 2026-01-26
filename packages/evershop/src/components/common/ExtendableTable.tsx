@@ -1,4 +1,12 @@
 import Area from '@components/common/Area.js';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@components/common/ui/Table.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
 import React from 'react';
 
@@ -195,14 +203,14 @@ function TableContent<T = any>({
   return (
     <>
       <Area id={'shoppingCartItems'} />
-      <table className={className}>
+      <Table className={className}>
         {!noHeader && (
-          <thead>
-            <tr>
+          <TableHeader>
+            <TableRow>
               {columns
                 .filter((col) => !col.isRemoved)
                 .map((col) => (
-                  <th
+                  <TableHead
                     key={col.key}
                     className={`${col.header.className} ${
                       col.sortable ? 'cursor-pointer' : ''
@@ -218,25 +226,27 @@ function TableContent<T = any>({
                         </span>
                       )}
                     </div>
-                  </th>
+                  </TableHead>
                 ))}
-            </tr>
-          </thead>
+            </TableRow>
+          </TableHeader>
         )}
-        <tbody className="divide-y divide-gray-200">
+        <TableBody>
           {tableData.length === 0 ? (
-            <tr>
-              <td colSpan={columns.filter((col) => !col.isRemoved).length}>
+            <TableRow>
+              <TableCell
+                colSpan={columns.filter((col) => !col.isRemoved).length}
+              >
                 {emptyMessage}
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ) : (
             tableData.map((row, rowIndex) => (
-              <tr key={rowIndex}>
+              <TableRow key={rowIndex}>
                 {columns
                   .filter((col) => !col.isRemoved)
                   .map((col) => (
-                    <td
+                    <TableCell
                       key={col.key}
                       className={col.className}
                       style={{ width: col.width }}
@@ -244,13 +254,13 @@ function TableContent<T = any>({
                       {col.render
                         ? col.render(row, rowIndex, loading)
                         : row[col.key]}
-                    </td>
+                    </TableCell>
                   ))}
-              </tr>
+              </TableRow>
             ))
           )}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </>
   );
 }

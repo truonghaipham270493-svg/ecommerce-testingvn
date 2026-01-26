@@ -1,3 +1,4 @@
+import { TableCell } from '@components/common/ui/Table.js';
 import React from 'react';
 
 interface ThumbnailProps {
@@ -7,10 +8,12 @@ interface ThumbnailProps {
 
 export function Thumbnail({ imageUrl, qty }: ThumbnailProps) {
   return (
-    <td>
+    <TableCell>
       <div className="product-thumbnail">
         <div className="thumbnail">
-          {imageUrl && <img src={imageUrl} alt="" />}
+          {imageUrl && (
+            <img src={imageUrl} alt="" className="max-w-full h-auto" />
+          )}
           {!imageUrl && (
             <svg
               style={{ width: '2rem' }}
@@ -28,6 +31,6 @@ export function Thumbnail({ imageUrl, qty }: ThumbnailProps) {
         </div>
         <span className="qty">{qty}</span>
       </div>
-    </td>
+    </TableCell>
   );
 }

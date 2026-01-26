@@ -1,9 +1,26 @@
-import { Card } from '@components/admin/Card.js';
-import { DateField } from '@components/common/form/DateField.js';
-import { DateTimeLocalField } from '@components/common/form/DateTimeLocalField.js';
 import { InputField } from '@components/common/form/InputField.js';
+import { ReactSelectField } from '@components/common/form/ReactSelectField.js';
 import { SelectField } from '@components/common/form/SelectField.js';
 import { TextareaField } from '@components/common/form/TextareaField.js';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@components/common/ui/Card.js';
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemTitle
+} from '@components/common/ui/Item.js';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from '@components/common/ui/Table.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
 import React, { useEffect } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -123,22 +140,30 @@ export default function Attributes({
 
   return (
     <Card>
-      <Card.Session title="Attribute group">
+      <CardHeader>
+        <CardTitle>Attribute group</CardTitle>
+        <CardDescription>Manage the attributes.</CardDescription>
+      </CardHeader>
+      <CardContent>
         <div>
           {product?.variantGroupId && (
-            <div>
+            <div className="flex flex-col">
               <InputField
                 type="hidden"
                 defaultValue={product?.groupId}
                 name="group_id"
               />
-              <div className="border rounded border-divider p-2">
-                <span>{getGroup(items, product?.groupId).groupName}</span>
-              </div>
-              <div className="italic text-textSubdued">
-                Can not change the attribute group of a product that is already
-                in a variant group.
-              </div>
+              <Item variant={'outline'} className="text-left">
+                <ItemContent>
+                  <ItemTitle>
+                    {getGroup(items, product?.groupId).groupName}
+                  </ItemTitle>
+                  <ItemDescription>
+                    Can not change the attribute group of a product that is
+                    already in a variant group.
+                  </ItemDescription>
+                </ItemContent>
+              </Item>
             </div>
           )}
           {!product?.variantGroupId && (
@@ -154,10 +179,10 @@ export default function Attributes({
             />
           )}
         </div>
-      </Card.Session>
-      <Card.Session title="Attributes">
-        <table className="table table-auto">
-          <tbody>
+      </CardContent>
+      <CardContent>
+        <Table>
+          <TableBody>
             {fields.map((attribute, index) => {
               const validation =
                 attribute.is_required === 1
@@ -200,7 +225,7 @@ export default function Attributes({
                   break;
                 case 'multiselect':
                   Field = (
-                    <SelectField
+                    <ReactSelectField
                       name={`attributes.${index}.value`}
                       options={getAttributeOptions(
                         items,
@@ -209,7 +234,7 @@ export default function Attributes({
                       placeholder="Select options"
                       required={attribute.is_required === 1}
                       validation={validation}
-                      multiple
+                      isMulti
                     />
                   );
                   break;
@@ -227,27 +252,27 @@ export default function Attributes({
                   break;
               }
               return (
-                <tr key={attribute.id}>
-                  <td>
+                <TableRow key={attribute.id}>
+                  <TableCell>
                     <span>{attribute.attribute_name}</span>
                     {attribute.is_required === 1 && (
-                      <span className="required-indicator">*</span>
+                      <span className="text-destructive pl-1">*</span>
                     )}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <InputField
                       type="hidden"
                       value={attribute.attribute_code}
                       name={`attributes.${index}.attribute_code`}
                     />
                     {Field}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
-      </Card.Session>
+          </TableBody>
+        </Table>
+      </CardContent>
     </Card>
   );
 }

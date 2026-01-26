@@ -1,6 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useAppDispatch } from '@components/common/context/app.js';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@evershop/evershop/components/common/ui/Select';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
+import { cn } from '@evershop/evershop/lib/util/cn';
+import { ArrowDownWideNarrow, ArrowUpWideNarrow } from 'lucide-react';
 import React, { ReactNode, useCallback } from 'react';
 
 export interface SortOption {
@@ -130,22 +141,29 @@ export function ProductSorting({
     onChange: (value: string) => void;
     disabled?: boolean;
   }) => (
-    <select
-      className="form-control"
-      onChange={(e) => props.onChange(e.target.value)}
-      value={props.value}
+    <Select
+      value={props.options.find((option) => option.code === props.value)}
+      onValueChange={(value) => props.onChange(value?.code || '')}
       disabled={props.disabled}
     >
-      {props.options.map((option) => (
-        <option
-          key={option.code}
-          value={option.code}
-          disabled={option.disabled}
-        >
-          {option.label || option.name}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder={_('Select sort')} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>{_('Sort By')}</SelectLabel>
+          {props.options.map((option) => (
+            <SelectItem
+              key={option.code}
+              value={option}
+              disabled={option.disabled}
+            >
+              {option.label || option.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 
   const defaultSortDirection = (props: {
@@ -157,54 +175,26 @@ export function ProductSorting({
       type="button"
       onClick={props.onToggle}
       disabled={props.disabled}
-      className={`sort-direction-btn ${
+      className={`sort-direction-btn flex items-center justify-center ${
         props.disabled
           ? 'opacity-50 cursor-not-allowed'
-          : 'hover:text-blue-600 cursor-pointer'
+          : 'hover:text-primary cursor-pointer'
       }`}
       aria-label={`Sort ${
         props.sortOrder === 'asc' ? 'descending' : 'ascending'
       }`}
     >
       {props.sortOrder === 'desc' ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="feather feather-arrow-up"
-        >
-          <line x1="12" y1="19" x2="12" y2="5" />
-          <polyline points="5 12 12 5 19 12" />
-        </svg>
+        <ArrowDownWideNarrow className="w-5 h-5 text-muted-foreground" />
       ) : (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="feather feather-arrow-down"
-        >
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <polyline points="19 12 12 19 5 12" />
-        </svg>
+        <ArrowUpWideNarrow className="w-5 h-5 text-muted-foreground" />
       )}
     </button>
   );
 
   const containerContent = (
     <>
-      <div style={{ width: '120px' }}>
+      <div className="sort-select grow">
         {renderSortSelect
           ? renderSortSelect({
               options: sortOptions,
@@ -238,6 +228,8 @@ export function ProductSorting({
   );
 
   return (
-    <div className={`product-sorting ${className}`}>{containerContent}</div>
+    <div className={cn(`product-sorting flex gap-2 items-center`, className)}>
+      {containerContent}
+    </div>
   );
 }

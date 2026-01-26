@@ -12,23 +12,19 @@ export default async () => {
       paymentStatus: {
         authorized: {
           name: 'Authorized',
-          badge: 'attention',
-          progress: 'incomplete'
+          badge: 'warning'
         },
         failed: {
           name: 'Failed',
-          badge: 'critical',
-          progress: 'failed'
+          badge: 'critical'
         },
         refunded: {
           name: 'Refunded',
-          badge: 'critical',
-          progress: 'complete'
+          badge: 'critical'
         },
         partial_refunded: {
           name: 'Partial Refunded',
-          badge: 'critical',
-          progress: 'incomplete'
+          badge: 'critical'
         }
       },
       psoMapping: {

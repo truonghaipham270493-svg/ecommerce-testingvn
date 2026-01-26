@@ -1,11 +1,11 @@
 import React from 'react';
 import './LoginForm.scss';
 import Area from '@components/common/Area.js';
-import Button from '@components/common/Button.js';
 import { EmailField } from '@components/common/form/EmailField.js';
 import { Form, useFormContext } from '@components/common/form/Form.js';
 import { PasswordField } from '@components/common/form/PasswordField.js';
-import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { Button } from '@components/common/ui/Button.js';
+import { LockKeyhole, Mail } from 'lucide-react';
 
 interface LoginFormProps {
   authUrl: string;
@@ -17,16 +17,18 @@ const SubmitButton: React.FC<{ formId: string }> = ({ formId }) => {
     formState: { isSubmitting }
   } = useFormContext();
   return (
-    <div className="form-submit-button flex border-t border-divider mt-4 pt-4 justify-between">
+    <div className="form-submit-button flex border-t border-border mt-4 pt-4 justify-between">
       <Button
-        title="SIGN IN"
-        onAction={() => {
+        onClick={() => {
           (document.getElementById(formId) as HTMLFormElement).dispatchEvent(
             new Event('submit', { cancelable: true, bubbles: true })
           );
         }}
+        size="lg"
         isLoading={isSubmitting}
-      />
+      >
+        SIGN IN
+      </Button>
     </div>
   );
 };
@@ -71,7 +73,7 @@ export default function LoginForm({ authUrl, dashboardUrl }: LoginFormProps) {
           />
         </svg>
       </div>
-      {error && <div className="text-critical py-2">{error}</div>}
+      {error && <div className="text-destructive py-2">{error}</div>}
       <Form
         action={authUrl}
         method="POST"
@@ -81,12 +83,13 @@ export default function LoginForm({ authUrl, dashboardUrl }: LoginFormProps) {
       >
         <Area
           id="adminLoginForm"
+          className="space-y-3"
           coreComponents={[
             {
               component: {
                 default: (
                   <EmailField
-                    prefixIcon={<EnvelopeIcon className="h-5 w-5" />}
+                    prefixIcon={<Mail className="h-5 w-5" />}
                     label="Email"
                     name="email"
                     placeholder="Email"
@@ -103,7 +106,7 @@ export default function LoginForm({ authUrl, dashboardUrl }: LoginFormProps) {
               component: {
                 default: (
                   <PasswordField
-                    prefixIcon={<LockClosedIcon className="h-5 w-5" />}
+                    prefixIcon={<LockKeyhole className="h-5 w-5" />}
                     label="Password"
                     name="password"
                     placeholder="Password"
@@ -124,7 +127,6 @@ export default function LoginForm({ authUrl, dashboardUrl }: LoginFormProps) {
               sortOrder: 30
             }
           ]}
-          noOuter
         />
       </Form>
     </div>

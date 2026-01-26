@@ -1,6 +1,6 @@
-import Button from '@components/common/Button.js';
+import { Button } from '@components/common/ui/Button.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useForm,
   FormProvider,
@@ -53,6 +53,7 @@ export function Form<T extends FieldValues = FieldValues>({
     externalForm ||
     useForm<T>({
       shouldUnregister: true,
+      shouldFocusError: false,
       ...formOptions
     });
   const {
@@ -100,12 +101,37 @@ export function Form<T extends FieldValues = FieldValues>({
     }
   };
 
+  const [canFocus, setCanFocus] = useState(true);
+
+  const onValidationError = () => {
+    console.log('Validation error');
+    setCanFocus(true);
+  };
+
+  useEffect(() => {
+    if (theForm.formState.errors && canFocus) {
+      const elements = Object.keys(theForm.formState.errors)
+        .map((name) => document.getElementById(`field-${name}`))
+        .filter((el) => !!el);
+      elements.sort(
+        (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
+      );
+
+      if (elements.length > 0) {
+        let errorElement = elements[0];
+        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        errorElement.focus({ preventScroll: true });
+        setCanFocus(false);
+      }
+    }
+  }, [theForm.formState, canFocus]);
+
   const handleFormSubmit = onSubmit || defaultSubmit;
 
   return (
     <FormProvider {...theForm}>
       <form
-        onSubmit={handleSubmit(handleFormSubmit)}
+        onSubmit={handleSubmit(handleFormSubmit, onValidationError)}
         className={className}
         noValidate={noValidate}
         {...props}
@@ -117,11 +143,13 @@ export function Form<T extends FieldValues = FieldValues>({
             <Button
               title={submitBtnText}
               type="submit"
-              onAction={() => {
+              onClick={() => {
                 handleSubmit(handleFormSubmit);
               }}
               isLoading={isSubmitting || loading}
-            />
+            >
+              {submitBtnText}
+            </Button>
           </div>
         )}
       </form>

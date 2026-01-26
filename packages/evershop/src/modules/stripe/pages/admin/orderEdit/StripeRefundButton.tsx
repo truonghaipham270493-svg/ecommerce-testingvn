@@ -1,10 +1,10 @@
-import { Card } from '@components/admin/Card.js';
-import Button from '@components/common/Button.js';
 import { Form } from '@components/common/form/Form.js';
 import { InputField } from '@components/common/form/InputField.js';
 import { NumberField } from '@components/common/form/NumberField.js';
 import { useAlertContext } from '@components/common/modal/Alert.js';
 import RenderIfTrue from '@components/common/RenderIfTrue.js';
+import { Button } from '@components/common/ui/Button.js';
+import { CardContent } from '@components/common/ui/Card.js';
 import React from 'react';
 import { toast } from 'react-toastify';
 
@@ -34,12 +34,11 @@ export default function StripeRefundButton({
         ['paid', 'partial_refunded'].includes(paymentStatus.code)
       }
     >
-      <Card.Session>
+      <CardContent>
         <div className="flex justify-end">
           <Button
-            title="Refund"
-            variant="secondary"
-            onAction={() => {
+            variant="destructive"
+            onClick={() => {
               openAlert({
                 heading: 'Refund',
                 content: (
@@ -117,14 +116,16 @@ export default function StripeRefundButton({
                       new Event('submit', { cancelable: true, bubbles: true })
                     );
                   },
-                  variant: 'primary',
+                  variant: 'secondary',
                   isLoading: false
                 }
               });
             }}
-          />
+          >
+            Refund
+          </Button>
         </div>
-      </Card.Session>
+      </CardContent>
     </RenderIfTrue>
   );
 }

@@ -1,4 +1,10 @@
 import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@components/common/ui/Card.js';
+import {
   useCartDispatch,
   useCartState
 } from '@components/frontStore/cart/CartContext.js';
@@ -9,6 +15,7 @@ import {
 import { ShippingMethods } from '@components/frontStore/checkout/shipment/ShippingMethods.js';
 import CustomerAddressForm from '@components/frontStore/customer/address/addressForm/Index.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
+import { MapPin } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -139,15 +146,24 @@ export function Shipment() {
   };
 
   return (
-    <div className="checkout__shipment space-y-6">
-      <h2>{_('Delivery')}</h2>
-      <div className="border rounded-lg transition-all overflow-hidden duration-200 p-3">
-        <CustomerAddressForm
-          areaId="checkoutShippingAddressForm"
-          fieldNamePrefix="shippingAddress"
-          address={shippingAddress}
-        />
-      </div>
+    <div className="checkout__shipment space-y-6 mt-6">
+      <Card className="transition-all overflow-hidden duration-200">
+        <CardHeader>
+          <CardTitle>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              <span>{_('Shipping Address')}</span>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CustomerAddressForm
+            areaId="checkoutShippingAddressForm"
+            fieldNamePrefix="shippingAddress"
+            address={shippingAddress}
+          />
+        </CardContent>
+      </Card>
       <ShippingMethods
         methods={availableShippingMethods?.map((method) => ({
           ...method,

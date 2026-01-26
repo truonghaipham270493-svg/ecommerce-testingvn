@@ -1,6 +1,12 @@
-import Button from '@components/common/Button.js';
-import { Modal } from '@components/common/modal/Modal.js';
-import { useModal } from '@components/common/modal/useModal.js';
+import { Button } from '@components/common/ui/Button.js';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@components/common/ui/Dialog.js';
 import React from 'react';
 import { VariantGroup } from '../VariantGroup.js';
 import { VariantModal } from './VariantModal.js';
@@ -9,30 +15,26 @@ export const CreateVariant: React.FC<{
   variantGroup: VariantGroup;
   createProductApi: string;
   refresh: () => void;
-}> = ({ variantGroup, createProductApi, refresh }) => {
-  const modal = useModal({
-    onAfterClose: () => {
-      refresh();
-    }
-  });
+}> = ({ variantGroup, createProductApi }) => {
   return (
-    <div>
-      <div className="mt-5">
-        <Button
-          title="Add Variant"
-          onAction={() => {
-            modal.open();
-          }}
-        />
-      </div>
-
-      <Modal isOpen={modal.isOpen} onClose={modal.close}>
-        <VariantModal
-          variantGroup={variantGroup}
-          createProductApi={createProductApi}
-          closeModal={modal.close}
-        />
-      </Modal>
+    <div className="mt-3">
+      <Dialog>
+        <DialogTrigger>
+          <Button variant={'outline'}>Add Variant</Button>
+        </DialogTrigger>
+        <DialogContent className={'sm:max-w-212.5'}>
+          <DialogHeader>
+            <DialogTitle>New Variant</DialogTitle>
+            <DialogDescription>
+              Create a new variant for this product.
+            </DialogDescription>
+          </DialogHeader>
+          <VariantModal
+            variantGroup={variantGroup}
+            createProductApi={createProductApi}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
