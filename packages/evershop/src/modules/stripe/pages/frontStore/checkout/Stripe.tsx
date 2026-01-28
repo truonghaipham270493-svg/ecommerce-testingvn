@@ -402,7 +402,7 @@ export default function StripeMethod({
             type="button"
             onClick={handleClick}
             disabled={isDisabled}
-            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:from-indigo-500 disabled:to-purple-600"
+            className="w-full bg-linear-to-r from-indigo-500 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:from-indigo-500 disabled:to-purple-600"
           >
             <span className="flex items-center justify-center space-x-2">
               {loadingStates.placingOrder ? (

@@ -6,9 +6,13 @@ import { cn } from '@evershop/evershop/lib/util/cn';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
+const InputGroup = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<'div'>
+>(({ className, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       data-slot="input-group"
       role="group"
       className={cn(
@@ -18,7 +22,8 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+});
+InputGroup.displayName = 'InputGroup';
 
 const inputGroupAddonVariants = cva(
   "text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4 flex cursor-text items-center justify-center select-none",
@@ -41,13 +46,13 @@ const inputGroupAddonVariants = cva(
   }
 );
 
-function InputGroupAddon({
-  className,
-  align = 'inline-start',
-  ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) {
+const InputGroupAddon = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>
+>(({ className, align = 'inline-start', ...props }, ref) => {
   return (
     <div
+      ref={ref}
       role="group"
       data-slot="input-group-addon"
       data-align={align}
@@ -61,7 +66,8 @@ function InputGroupAddon({
       {...props}
     />
   );
-}
+});
+InputGroupAddon.displayName = 'InputGroupAddon';
 
 const inputGroupButtonVariants = cva(
   'gap-2 text-sm shadow-none flex items-center',
@@ -81,18 +87,16 @@ const inputGroupButtonVariants = cva(
   }
 );
 
-function InputGroupButton({
-  className,
-  type = 'button',
-  variant = 'ghost',
-  size = 'xs',
-  ...props
-}: Omit<React.ComponentProps<typeof Button>, 'size' | 'type'> &
-  VariantProps<typeof inputGroupButtonVariants> & {
-    type?: 'button' | 'submit' | 'reset';
-  }) {
+const InputGroupButton = React.forwardRef<
+  HTMLButtonElement,
+  Omit<React.ComponentProps<typeof Button>, 'size' | 'type'> &
+    VariantProps<typeof inputGroupButtonVariants> & {
+      type?: 'button' | 'submit' | 'reset';
+    }
+>(({ className, type = 'button', variant = 'ghost', size = 'xs', ...props }, ref) => {
   return (
     <Button
+      ref={ref}
       type={type}
       data-size={size}
       variant={variant}
@@ -100,11 +104,16 @@ function InputGroupButton({
       {...props}
     />
   );
-}
+});
+InputGroupButton.displayName = 'InputGroupButton';
 
-function InputGroupText({ className, ...props }: React.ComponentProps<'span'>) {
+const InputGroupText = React.forwardRef<
+  HTMLSpanElement,
+  React.ComponentProps<'span'>
+>(({ className, ...props }, ref) => {
   return (
     <span
+      ref={ref}
       className={cn(
         "text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none",
         className
@@ -112,14 +121,16 @@ function InputGroupText({ className, ...props }: React.ComponentProps<'span'>) {
       {...props}
     />
   );
-}
+});
+InputGroupText.displayName = 'InputGroupText';
 
-function InputGroupInput({
-  className,
-  ...props
-}: React.ComponentProps<'input'>) {
+const InputGroupInput = React.forwardRef<
+  HTMLInputElement,
+  React.ComponentProps<'input'>
+>(({ className, ...props }, ref) => {
   return (
     <Input
+      ref={ref}
       data-slot="input-group-control"
       className={cn(
         'rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent flex-1',
@@ -128,14 +139,16 @@ function InputGroupInput({
       {...props}
     />
   );
-}
+});
+InputGroupInput.displayName = 'InputGroupInput';
 
-function InputGroupTextarea({
-  className,
-  ...props
-}: React.ComponentProps<'textarea'>) {
+const InputGroupTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.ComponentProps<'textarea'>
+>(({ className, ...props }, ref) => {
   return (
     <Textarea
+      ref={ref}
       data-slot="input-group-control"
       className={cn(
         'rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent flex-1 resize-none',
@@ -144,7 +157,8 @@ function InputGroupTextarea({
       {...props}
     />
   );
-}
+});
+InputGroupTextarea.displayName = 'InputGroupTextarea';
 
 export {
   InputGroup,

@@ -124,7 +124,7 @@ export function SortableHeader({
         <div className="font-medium uppercase text-xs">
           <span>{title}</span>
         </div>
-        <div className="sort">
+        <div className="sort flex items-center">
           <button type="button" onClick={onChange}>
             {currentDirection === 'asc' ? (
               <Down />

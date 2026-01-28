@@ -1,4 +1,3 @@
-import { RadioGroupField } from '@components/common/form/RadioGroupField.js';
 import {
   Card,
   CardContent,
@@ -125,7 +124,7 @@ export function ShippingMethods({
                 <input
                   type="hidden"
                   {...form.register('shippingMethod', { required: true })}
-                  value={currentValue}
+                  defaultValue={currentValue}
                 />
                 {methods?.length === 0 ? (
                   <div className="text-left">

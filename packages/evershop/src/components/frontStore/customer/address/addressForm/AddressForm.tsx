@@ -91,6 +91,8 @@ export function CustomerAddressForm({
                 name={getFieldName('city')}
                 label={_('City')}
                 placeholder={_('City')}
+                required
+                validation={{ required: _('City is required') }}
                 defaultValue={address?.city || ''}
               />
             )

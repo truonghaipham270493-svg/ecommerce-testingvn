@@ -9,8 +9,8 @@ export function ProductNameRow({ url, name }: ProductNameRowProps) {
   return (
     <TableCell>
       <div>
-        <a className="hover:underline font-semibold" href={url}>
-          {name}
+        <a className="hover:underline font-semibold" href={url} title={name}>
+          {name.length > 50 ? `${name.substring(0, 50)}...` : name}
         </a>
       </div>
     </TableCell>

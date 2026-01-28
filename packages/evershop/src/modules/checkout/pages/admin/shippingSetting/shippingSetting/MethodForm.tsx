@@ -183,6 +183,7 @@ function MethodForm({
     });
     const data = await response.json();
     if (response.ok) {
+      await reexecuteQuery({ requestPolicy: 'network-only' });
       form.setValue('method_id', data.data.uuid);
     } else {
       toast.error(data.error.message);
@@ -190,7 +191,7 @@ function MethodForm({
     setIsLoading(false);
   };
 
-  if (result.fetching) {
+  if (result.fetching && !result.data) {
     return (
       <div className="flex justify-center p-2">
         <Spinner width={25} height={25} />
@@ -373,6 +374,7 @@ function MethodForm({
                 );
               }}
               isLoading={isLoading}
+              disabled={shippingMethod.updatingName}
             >
               Save
             </Button>

@@ -50,6 +50,12 @@ async function loadEditorJSQuote(): Promise<any> {
   return Quote;
 }
 
+// Using custom RawToolWrapper instead to fix backspace issues
+// async function loadEditorJSRaw(): Promise<any> {
+//   const { default: RawTool } = await import('@editorjs/raw');
+//   return RawTool;
+// }
+
 const SortableRow: React.FC<{
   row: Row;
   removeRow: (rowId: string) => void;
@@ -194,6 +200,7 @@ export const Editor: React.FC<EditorProps> = ({ name, value = [], label }) => {
       const Header = await loadEditorJSHeader();
       const List = await loadEditorJSList();
       const Quote = await loadEditorJSQuote();
+      // Using RawToolWrapper instead of loading from @editorjs/raw
       setValue(name, rows);
       rows.forEach((row) => {
         row.columns.forEach((column) => {
@@ -278,6 +285,7 @@ export const Editor: React.FC<EditorProps> = ({ name, value = [], label }) => {
           >
             <div id="rows">
               {rows.map((row) => (
+                // Grid template columns based on the number of columns in the row
                 <SortableRow key={row.id} row={row} removeRow={removeRow}>
                   <div
                     className={`row grid p-5 divide-x divide-dashed ${row.className}`}

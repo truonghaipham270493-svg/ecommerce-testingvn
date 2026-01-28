@@ -1,18 +1,17 @@
 import Area from '@components/common/Area';
-import { Circle } from '@components/common/ui/Circle.js';
-import PropTypes from 'prop-types';
-import React from 'react';
-import './Items.scss';
 import { Card } from '@components/common/ui/Card';
-import { Name } from './items/Name.js';
-import { Price } from './items/Price.js';
-import { Thumbnail } from './items/Thumbnail.js';
-import { Table, TableBody, TableRow } from '@components/common/ui/Table.js';
 import {
   CardContent,
   CardHeader,
   CardTitle
 } from '@components/common/ui/Card.js';
+import { Circle } from '@components/common/ui/Circle.js';
+import { Table, TableBody, TableRow } from '@components/common/ui/Table.js';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Name } from './items/Name.js';
+import { Price } from './items/Price.js';
+import { Thumbnail } from './items/Thumbnail.js';
 
 export default function Items({ order: { items, shipmentStatus } }) {
   return (

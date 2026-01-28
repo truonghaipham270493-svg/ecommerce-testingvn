@@ -9,14 +9,14 @@ interface ThumbnailProps {
 export function Thumbnail({ imageUrl, qty }: ThumbnailProps) {
   return (
     <TableCell>
-      <div className="product-thumbnail">
-        <div className="thumbnail">
+      <div className="relative w-12 h-12 flex justify-center border border-divider rounded-[3px] p-0.5 box-border">
+        <div className="self-center text-border">
           {imageUrl && (
             <img src={imageUrl} alt="" className="max-w-full h-auto" />
           )}
           {!imageUrl && (
             <svg
-              style={{ width: '2rem' }}
+              className="w-8"
               fill="currentcolor"
               viewBox="0 0 20 20"
               focusable="false"
@@ -29,7 +29,9 @@ export function Thumbnail({ imageUrl, qty }: ThumbnailProps) {
             </svg>
           )}
         </div>
-        <span className="qty">{qty}</span>
+        <span className="block w-5 h-5 text-xs absolute -top-[0.8rem] -right-[0.8rem] bg-divider rounded-full text-center leading-tight pt-0.5">
+          {qty}
+        </span>
       </div>
     </TableCell>
   );

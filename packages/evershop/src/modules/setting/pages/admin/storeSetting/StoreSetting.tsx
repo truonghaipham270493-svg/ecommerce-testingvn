@@ -15,7 +15,8 @@ import {
   CardTitle
 } from '@components/common/ui/Card.js';
 import { Item } from '@components/common/ui/Item.js';
-import React from 'react';
+import { Skeleton } from '@components/common/ui/Skeleton.js';
+import React, { useEffect } from 'react';
 import { useQuery } from 'urql';
 
 const ProvincesQuery = `
@@ -49,17 +50,27 @@ const Province: React.FC<{
   fieldName = 'storeProvince'
 }) => {
   const { setValue } = useFormContext();
+
   const [result] = useQuery({
     query: ProvincesQuery,
     variables: { countries: allowedCountries }
   });
   const { data, fetching, error } = result;
-
+  useEffect(() => {
+    if (fetching || !data) return;
+    const provinces = data.provinces.filter(
+      (p) => p.countryCode === selectedCountry
+    );
+    if (provinces.every((p) => p.code !== selectedProvince)) {
+      setValue(fieldName, '');
+    }
+  }, [selectedCountry, fetching]);
   if (fetching)
     return (
-      <Item variant={'outline'}>
-        <Spinner width={'1rem'} height={'1rem'} />
-      </Item>
+      <div className="flex flex-col gap-3">
+        <Skeleton className="w-1/2 h-5 rounded-md" />
+        <Skeleton className="w-full h-9 rounded-md" />
+      </div>
     );
   if (error) {
     return <p className="text-destructive">{error.message}</p>;
@@ -70,9 +81,7 @@ const Province: React.FC<{
   if (!provinces.length) {
     return null;
   }
-  if (provinces.every((p) => p.code !== selectedProvince)) {
-    setValue(fieldName, '');
-  }
+
   return (
     <div>
       <SelectField
@@ -280,16 +289,18 @@ export default function StoreSetting({
               </CardContent>
               <CardContent className="pt-3 border-t border-border">
                 <CardTitle>Address</CardTitle>
-                <Country
-                  selectedCountry={storeCountry}
-                  setSelectedCountry={setSelectedCountry}
-                />
-                <InputField
-                  name="storeAddress"
-                  label="Address"
-                  defaultValue={storeAddress}
-                  placeholder="Store Address"
-                />
+                <div className="space-y-3">
+                  <Country
+                    selectedCountry={storeCountry}
+                    setSelectedCountry={setSelectedCountry}
+                  />
+                  <InputField
+                    name="storeAddress"
+                    label="Address"
+                    defaultValue={storeAddress}
+                    placeholder="Store Address"
+                  />
+                </div>
                 <div className="grid grid-cols-3 gap-5 mt-5">
                   <div>
                     <InputField

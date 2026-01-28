@@ -128,11 +128,15 @@ export default async (
       if (shippingAddress) {
         const address: any = {
           address_line_1: shippingAddress.address_1,
-          address_line_2: shippingAddress.address_2,
-          admin_area_2: shippingAddress.city,
           postal_code: shippingAddress.postcode,
           country_code: shippingAddress.country
         };
+        if (shippingAddress.address_2) {
+          address.address_line_2 = shippingAddress.address_2;
+        }
+        if (shippingAddress.city) {
+          address.admin_area_2 = shippingAddress.city;
+        }
         if (shippingAddress.province) {
           address.admin_area_1 = shippingAddress.province.split('-').pop();
         }
@@ -147,7 +151,6 @@ export default async (
         orderData.application_context = orderData.application_context || {};
         orderData.application_context.shipping_preference = 'NO_SHIPPING';
       }
-
       const finalPaypalOrderData = getValueSync<CreateOrderRequestBody>(
         'finalPaypalOrderData',
         orderData,

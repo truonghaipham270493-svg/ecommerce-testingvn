@@ -53,7 +53,7 @@ export function ProductSingleForm() {
                     sku: sku,
                     isInStock: isInStock
                   }}
-                  qty={1}
+                  qty={form.watch('qty') || 1}
                   onSuccess={() => {
                     // To show the mini cart after adding a product to cart
                   }}

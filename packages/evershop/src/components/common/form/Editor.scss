@@ -7,6 +7,13 @@ body .codex-editor {
     background-color: #fff;
   }
 
+  .row__container {
+    &:hover,
+    &:focus-within {
+      z-index: 100 !important;
+    }
+  }
+
   .drag__icon {
     cursor: move;
     display: flex;

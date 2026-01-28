@@ -2,8 +2,14 @@ import Area from '@components/common/Area.js';
 import { useAppState } from '@components/common/context/app.js';
 import { Skeleton } from '@components/common/ui/Skeleton.js';
 import { useCartState } from '@components/frontStore/cart/CartContext.js';
+import {
+  Coupon,
+  CouponState,
+  CouponActions
+} from '@components/frontStore/Coupon.js';
 import { CouponForm } from '@components/frontStore/CouponForm.js';
 import { _ } from '@evershop/evershop/lib/locale/translate/_';
+import { CircleX } from 'lucide-react';
 import React from 'react';
 
 const SkeletonValue: React.FC<{
@@ -104,10 +110,32 @@ const Discount: React.FC<{
 
   return (
     <div className="flex justify-between gap-7 py-2">
-      <div>{_('Discount(${coupon})', { coupon })}</div>
-      <SkeletonValue loading={loading} className="text-right">
-        {discountAmount}
-      </SkeletonValue>
+      <Coupon>
+        {(state: CouponState, actions: CouponActions) => (
+          <>
+            <div className="flex justify-start items-center gap-2">
+              <SkeletonValue loading={loading} className="text-right">
+                <span>{_('Discount(${coupon})', { coupon })}</span>
+              </SkeletonValue>
+              {!state.isLoading && (
+                <a
+                  href="#"
+                  className="text-destructive"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    await actions.removeCoupon();
+                  }}
+                >
+                  <CircleX className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+            <SkeletonValue loading={loading} className="text-right">
+              {discountAmount}
+            </SkeletonValue>
+          </>
+        )}
+      </Coupon>
     </div>
   );
 };

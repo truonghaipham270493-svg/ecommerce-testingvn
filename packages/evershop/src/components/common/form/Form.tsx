@@ -109,9 +109,9 @@ export function Form<T extends FieldValues = FieldValues>({
 
   useEffect(() => {
     if (theForm.formState.errors && canFocus) {
-      const elements = Object.keys(theForm.formState.errors)
-        .map((name) => document.getElementById(`field-${name}`))
-        .filter((el) => !!el);
+      const elements = Array.from(
+        document.querySelectorAll('[aria-invalid="true"]')
+      ) as HTMLElement[];
       elements.sort(
         (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
       );
@@ -143,7 +143,7 @@ export function Form<T extends FieldValues = FieldValues>({
               title={submitBtnText}
               type="submit"
               onClick={() => {
-                handleSubmit(handleFormSubmit);
+                handleSubmit(handleFormSubmit, onValidationError)();
               }}
               isLoading={isSubmitting || loading}
             >
