@@ -1,0 +1,78 @@
+# Production Dockerfile for EverShop
+FROM node:18-alpine AS builder
+
+# Install dependencies for building native modules
+RUN apk add --no-cache python3 make g++
+
+# Create app directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY packages/evershop/package*.json ./packages/evershop/
+COPY packages/postgres-query-builder/package*.json ./packages/postgres-query-builder/
+
+# Install dependencies
+RUN npm install --workspaces --production=false
+
+# Copy all source code
+COPY . .
+
+# Build TypeScript code for postgres-query-builder package
+RUN cd packages/postgres-query-builder && npm run compile
+
+# Build TypeScript code for evershop package
+RUN cd packages/evershop && npx tsc && npx copyfiles -u 1 "src/**/*.{graphql,scss,css,json,js}" dist/
+
+# Build the project (webpack build)
+RUN npm run build
+
+# Production stage - optimized for small memory
+FROM node:18-alpine
+
+# Install minimal PostgreSQL client for health checks
+RUN apk add --no-cache postgresql-client
+
+# Create app directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY packages/evershop/package*.json ./packages/evershop/
+COPY packages/postgres-query-builder/package*.json ./packages/postgres-query-builder/
+
+# Install production dependencies only with memory optimization
+RUN npm config set maxsockets 1 && \
+    npm install --workspaces --production=true --no-audit --no-fund --loglevel=error
+
+# Copy built artifacts from builder stage
+COPY --from=builder /app/packages/evershop/dist ./packages/evershop/dist
+COPY --from=builder /app/packages/postgres-query-builder/dist ./packages/postgres-query-builder/dist
+COPY --from=builder /app/.evershop ./.evershop
+COPY --from=builder /app/public ./public
+
+# Copy necessary source files (for GraphQL, etc.)
+COPY --from=builder /app/packages/evershop/src/graphql ./packages/evershop/src/graphql
+COPY --from=builder /app/packages/evershop/src/lib ./packages/evershop/src/lib
+COPY --from=builder /app/packages/evershop/src/modules ./packages/evershop/src/modules
+COPY --from=builder /app/packages/evershop/src/types ./packages/evershop/src/types
+COPY --from=builder /app/packages/evershop/src/components ./packages/evershop/src/components
+
+# Create necessary directories
+RUN mkdir -p public/media public/images config themes extensions
+
+# Set permissions
+RUN chown -R node:node /app
+
+# Switch to non-root user
+USER node
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if(r.statusCode !== 200) throw new Error()})"
+
+# Start command
+CMD ["node", "./packages/evershop/dist/bin/start/index.js"]

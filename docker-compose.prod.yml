@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  # EverShop application - built from source
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_USER: ${DB_USER:-postgres}
+      DB_NAME: ${DB_NAME:-evershop}
+      NODE_ENV: production
+      PORT: 3000
+      NODE_OPTIONS: "--max-old-space-size=512"
+    networks:
+      - evershop-network
+    depends_on:
+      database:
+        condition: service_healthy
+    expose:
+      - "3000"
+    volumes:
+      - app-data:/app/public/media
+      - app-data:/app/public/images
+    command: >
+      sh -c "
+      echo 'Waiting for database to be ready...'
+      sleep 10
+      echo 'Starting EverShop...'
+      node ./packages/evershop/dist/bin/start/index.js
+      "
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+  
+  # PostgreSQL database - optimized for small VPS
+  database:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_DB: ${DB_NAME:-evershop}
+      # PostgreSQL optimization for small memory
+      POSTGRES_SHARED_BUFFERS: 128MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 256MB
+      POSTGRES_MAINTENANCE_WORK_MEM: 32MB
+      POSTGRES_WORK_MEM: 4MB
+      POSTGRES_MAX_CONNECTIONS: 50
+      POSTGRES_RANDOM_PAGE_COST: 1.1
+      POSTGRES_EFFECTIVE_IO_CONCURRENCY: 200
+    networks:
+      - evershop-network
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 512M
+        reservations:
+          cpus: '0.15'
+          memory: 256M
+
+  # Nginx reverse proxy with SSL - lightweight
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./logs/nginx:/var/log/nginx
+    networks:
+      - evershop-network
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+
+  # Certbot for SSL certificate - runs only during renewal
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./ssl:/etc/nginx/ssl
+      - ./certbot-data:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - evershop-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 32M
+        reservations:
+          cpus: '0.02'
+          memory: 16M
+
+networks:
+  evershop-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  app-data:
