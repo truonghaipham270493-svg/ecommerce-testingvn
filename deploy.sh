@@ -17,6 +17,29 @@ fi
 PROJECT_DIR=$(pwd)
 echo "📁 Project directory: $PROJECT_DIR"
 
+# Update system (optional - comment out if not needed)
+echo "📦 Updating system packages (optional)..."
+apt-get update && apt-get upgrade -y || echo "System update skipped or failed"
+
+# Install Docker and Docker Compose if not installed
+echo "🐳 Checking for Docker and Docker Compose..."
+if ! command -v docker &> /dev/null; then
+    echo "Installing Docker..."
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sh get-docker.sh
+    rm get-docker.sh
+else
+    echo "✅ Docker is already installed"
+fi
+
+if ! command -v docker-compose &> /dev/null; then
+    echo "Installing Docker Compose..."
+    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+else
+    echo "✅ Docker Compose is already installed"
+fi
+
 # Create directory structure
 echo "📁 Creating directory structure..."
 mkdir -p {ssl,logs,data}
@@ -93,27 +116,59 @@ sleep 5
 
 # Get SSL certificate using certbot
 echo "📜 Getting SSL certificate from Let's Encrypt..."
-docker run -it --rm \
-  -v /etc/letsencrypt:/etc/letsencrypt \
-  -v $PROJECT_DIR/ssl:/etc/nginx/ssl \
-  -v /var/www/certbot:/var/www/certbot \
-  certbot/certbot certonly \
-  --webroot \
-  --webroot-path=/var/www/certbot \
-  --email admin@tvn-sut.info \
-  --agree-tos \
-  --no-eff-email \
-  -d tvn-sut.info \
-  -d www.tvn-sut.info
+
+# Check if certificates already exist
+if [ -d "/etc/letsencrypt/live/tvn-sut.info" ]; then
+    echo "✅ SSL certificates already exist. Using existing certificates."
+else
+    echo "🔄 Attempting to get new SSL certificates..."
+    
+    # Try to get SSL certificate
+    if docker run -it --rm \
+      -v /etc/letsencrypt:/etc/letsencrypt \
+      -v $PROJECT_DIR/ssl:/etc/nginx/ssl \
+      -v /var/www/certbot:/var/www/certbot \
+      certbot/certbot certonly \
+      --webroot \
+      --webroot-path=/var/www/certbot \
+      --email admin@tvn-sut.info \
+      --agree-tos \
+      --no-eff-email \
+      -d tvn-sut.info \
+      -d www.tvn-sut.info; then
+        echo "✅ SSL certificate obtained successfully!"
+    else
+        echo "⚠️  Could not obtain SSL certificate. This could be due to:"
+        echo "   1. Rate limits (you've requested too many certificates recently)"
+        echo "   2. DNS not pointing to this server yet"
+        echo "   3. Port 80 not accessible"
+        echo ""
+        echo "📋 Manual SSL setup options:"
+        echo "   Option 1: Wait and retry later (rate limit resets: 2026-01-31 06:10:31 UTC)"
+        echo "   Option 2: Use self-signed certificate for testing:"
+        echo "     mkdir -p $PROJECT_DIR/ssl"
+        echo "     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \\"
+        echo "       -keyout $PROJECT_DIR/ssl/privkey.pem \\"
+        echo "       -out $PROJECT_DIR/ssl/fullchain.pem \\"
+        echo "       -subj \"/CN=tvn-sut.info\""
+        echo "   Option 3: Use Cloudflare or other SSL proxy"
+        echo ""
+        echo "🚀 Starting services without SSL (HTTP only)..."
+        # Modify nginx config to use HTTP only temporarily
+        sed -i 's/listen 443 ssl http2;/listen 80;/g' nginx-prod.conf
+        sed -i 's/ssl_certificate/# ssl_certificate/g' nginx-prod.conf
+        sed -i 's/ssl_certificate_key/# ssl_certificate_key/g' nginx-prod.conf
+    fi
+fi
 
 # Stop temporary nginx
 echo "🛑 Stopping temporary nginx..."
-docker stop nginx-temp
-docker rm nginx-temp
-rm nginx-temp.conf
+docker stop nginx-temp 2>/dev/null || true
+docker rm nginx-temp 2>/dev/null || true
+rm -f nginx-temp.conf
 
-# Start all services with SSL
-echo "🚀 Starting all services with SSL..."
+# Start all services
+echo "🚀 Starting all services..."
 docker-compose up -d --build
 
 # Set up SSL certificate auto-renewal
