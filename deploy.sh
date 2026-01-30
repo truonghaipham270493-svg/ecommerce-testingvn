@@ -59,9 +59,22 @@ PORT=3000
 # Domain configuration
 DOMAIN=tvn-sut.info
 EMAIL=admin@tvn-sut.info
+
+# Docker image configuration
+# Set this to your pre-built image in registry
+# Example: docker.io/yourusername/evershop:latest
+DOCKER_IMAGE=docker.io/evershop:latest
 EOF
 
 echo "✅ Environment file created at $PROJECT_DIR/.env"
+
+# Ask for Docker image if not default
+read -p "Enter Docker image name [docker.io/evershop:latest]: " CUSTOM_IMAGE
+CUSTOM_IMAGE=${CUSTOM_IMAGE:-docker.io/evershop:latest}
+if [ "$CUSTOM_IMAGE" != "docker.io/evershop:latest" ]; then
+    sed -i "s|DOCKER_IMAGE=docker.io/evershop:latest|DOCKER_IMAGE=$CUSTOM_IMAGE|g" .env
+    echo "✅ Updated .env with Docker image: $CUSTOM_IMAGE"
+fi
 
 # Create docker-compose.yml from prod version
 echo "🐳 Setting up Docker Compose..."
@@ -73,6 +86,10 @@ else
     echo "Make sure you have the production configuration files"
     exit 1
 fi
+
+# Pull Docker image before starting
+echo "📥 Pulling Docker image..."
+docker-compose pull app || echo "⚠️  Could not pull image. Make sure it exists in the registry or build locally first."
 
 # Create SSL certificate directory
 echo "🔐 Setting up SSL certificates..."
@@ -169,7 +186,7 @@ rm -f nginx-temp.conf
 
 # Start all services
 echo "🚀 Starting all services..."
-docker-compose up -d --build
+docker-compose up -d
 
 # Set up SSL certificate auto-renewal
 echo "🔄 Setting up SSL certificate auto-renewal..."
@@ -203,7 +220,7 @@ echo "🔧 Management Commands:"
 echo "   - View logs: cd $PROJECT_DIR && docker-compose logs -f"
 echo "   - Restart: cd $PROJECT_DIR && docker-compose restart"
 echo "   - Stop: cd $PROJECT_DIR && docker-compose down"
-echo "   - Update: cd $PROJECT_DIR && git pull && docker-compose up -d --build"
+echo "   - Update: cd $PROJECT_DIR && docker-compose pull && docker-compose up -d"
 echo ""
 echo "📈 Resource Usage (optimized for 1 vCPU / 2GB RAM):"
 echo "   - EverShop App: 0.5 vCPU / 512MB RAM"

@@ -1,11 +1,9 @@
 version: '3.8'
 
 services:
-  # EverShop application - built from source
+  # EverShop application - using pre-built image from registry
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
+    image: haiphamt1/testingvn:latest
     restart: always
     environment:
       DB_HOST: database
