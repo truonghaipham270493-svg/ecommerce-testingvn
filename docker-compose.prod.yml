@@ -71,7 +71,7 @@ services:
           cpus: '0.15'
           memory: 256M
 
-  # Nginx reverse proxy with SSL - lightweight
+  # Nginx reverse proxy with SSL - using custom Cloudflare certificates
   nginx:
     image: nginx:alpine
     restart: unless-stopped
@@ -81,7 +81,6 @@ services:
     volumes:
       - ./nginx-prod.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl
-      - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./logs/nginx:/var/log/nginx
     networks:
       - evershop-network
@@ -95,26 +94,6 @@ services:
         reservations:
           cpus: '0.05'
           memory: 32M
-
-  # Certbot for SSL certificate - runs only during renewal
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - ./ssl:/etc/nginx/ssl
-      - ./certbot-data:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    networks:
-      - evershop-network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.05'
-          memory: 32M
-        reservations:
-          cpus: '0.02'
-          memory: 16M
 
 networks:
   evershop-network:

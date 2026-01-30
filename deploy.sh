@@ -94,116 +94,43 @@ docker-compose pull app || echo "⚠️  Could not pull image. Make sure it exis
 # Create SSL certificate directory
 echo "🔐 Setting up SSL certificates..."
 mkdir -p ssl
-mkdir -p /etc/letsencrypt
-mkdir -p /var/www/certbot
+mkdir -p ssl/custom
 
-# Create initial nginx configuration for certbot
-echo "🌐 Creating temporary nginx configuration for SSL certificate..."
-cat > nginx-temp.conf << 'EOF'
-events {
-    worker_connections 1024;
-}
-
-http {
-    server {
-        listen 80;
-        server_name tvn-sut.info www.tvn-sut.info;
-        
-        location /.well-known/acme-challenge/ {
-            root /var/www/certbot;
-        }
-        
-        location / {
-            return 444; # Close connection - we only want ACME challenges
-        }
-    }
-}
-EOF
-
-# Start temporary nginx for SSL certificate
-echo "🚀 Starting temporary nginx for SSL certificate..."
-docker run -d --name nginx-temp \
-  -p 80:80 \
-  -v /var/www/certbot:/var/www/certbot \
-  -v $PROJECT_DIR/nginx-temp.conf:/etc/nginx/nginx.conf:ro \
-  nginx:alpine
-
-echo "⏳ Waiting for nginx to start..."
-sleep 5
-
-# Get SSL certificate using certbot
-echo "📜 Getting SSL certificate from Let's Encrypt..."
-
-# Check if certificates already exist
-if [ -d "/etc/letsencrypt/live/tvn-sut.info" ]; then
-    echo "✅ SSL certificates already exist. Using existing certificates."
+# Check for custom SSL certificates
+echo "📜 Checking for custom SSL certificates..."
+if [ -f "ssl/custom/cloudflare.pem" ] && [ -f "ssl/custom/cloudflare.key" ]; then
+    echo "✅ Found custom Cloudflare SSL certificates in ssl/custom/"
+    echo "   Using cloudflare.pem and cloudflare.key for SSL"
 else
-    echo "🔄 Attempting to get new SSL certificates..."
-    
-    # Try to get SSL certificate
-    if docker run -it --rm \
-      -v /etc/letsencrypt:/etc/letsencrypt \
-      -v $PROJECT_DIR/ssl:/etc/nginx/ssl \
-      -v /var/www/certbot:/var/www/certbot \
-      certbot/certbot certonly \
-      --webroot \
-      --webroot-path=/var/www/certbot \
-      --email admin@tvn-sut.info \
-      --agree-tos \
-      --no-eff-email \
-      -d tvn-sut.info \
-      -d www.tvn-sut.info; then
-        echo "✅ SSL certificate obtained successfully!"
-    else
-        echo "⚠️  Could not obtain SSL certificate. This could be due to:"
-        echo "   1. Rate limits (you've requested too many certificates recently)"
-        echo "   2. DNS not pointing to this server yet"
-        echo "   3. Port 80 not accessible"
-        echo ""
-        echo "📋 Manual SSL setup options:"
-        echo "   Option 1: Wait and retry later (rate limit resets: 2026-01-31 06:10:31 UTC)"
-        echo "   Option 2: Use self-signed certificate for testing:"
-        echo "     mkdir -p $PROJECT_DIR/ssl"
-        echo "     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \\"
-        echo "       -keyout $PROJECT_DIR/ssl/privkey.pem \\"
-        echo "       -out $PROJECT_DIR/ssl/fullchain.pem \\"
-        echo "       -subj \"/CN=tvn-sut.info\""
-        echo "   Option 3: Use Cloudflare or other SSL proxy"
-        echo ""
-        echo "🚀 Starting services without SSL (HTTP only)..."
-        # Modify nginx config to use HTTP only temporarily
-        sed -i 's/listen 443 ssl http2;/listen 80;/g' nginx-prod.conf
-        sed -i 's/ssl_certificate/# ssl_certificate/g' nginx-prod.conf
-        sed -i 's/ssl_certificate_key/# ssl_certificate_key/g' nginx-prod.conf
-    fi
+    echo "⚠️  Custom SSL certificates not found in ssl/custom/"
+    echo "   Please ensure you have the following files:"
+    echo "   - ssl/custom/cloudflare.pem (certificate)"
+    echo "   - ssl/custom/cloudflare.key (private key)"
+    echo ""
+    echo "📋 SSL setup options:"
+    echo "   Option 1: Upload your Cloudflare Origin certificates to ssl/custom/"
+    echo "   Option 2: Use self-signed certificate for testing:"
+    echo "     mkdir -p $PROJECT_DIR/ssl/custom"
+    echo "     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \\"
+    echo "       -keyout $PROJECT_DIR/ssl/custom/cloudflare.key \\"
+    echo "       -out $PROJECT_DIR/ssl/custom/cloudflare.pem \\"
+    echo "       -subj \"/CN=tvn-sut.info\""
+    echo ""
+    echo "🚀 Starting services without SSL (HTTP only)..."
+    # Modify nginx config to use HTTP only temporarily
+    sed -i 's/listen 443 ssl http2;/listen 80;/g' nginx-prod.conf
+    sed -i 's/ssl_certificate/# ssl_certificate/g' nginx-prod.conf
+    sed -i 's/ssl_certificate_key/# ssl_certificate_key/g' nginx-prod.conf
 fi
-
-# Stop temporary nginx
-echo "🛑 Stopping temporary nginx..."
-docker stop nginx-temp 2>/dev/null || true
-docker rm nginx-temp 2>/dev/null || true
-rm -f nginx-temp.conf
 
 # Start all services
 echo "🚀 Starting all services..."
 docker-compose up -d
 
-# Set up SSL certificate auto-renewal
-echo "🔄 Setting up SSL certificate auto-renewal..."
-cat > /etc/cron.daily/certbot-renew << EOF
-#!/bin/bash
-docker run --rm \\
-  -v /etc/letsencrypt:/etc/letsencrypt \\
-  -v $PROJECT_DIR/ssl:/etc/nginx/ssl \\
-  -v /var/www/certbot:/var/www/certbot \\
-  certbot/certbot renew \\
-  --webroot \\
-  --webroot-path=/var/www/certbot \\
-  --quiet
-docker-compose -f $PROJECT_DIR/docker-compose.yml exec nginx nginx -s reload
-EOF
-
-chmod +x /etc/cron.daily/certbot-renew
+# Note: Cloudflare Origin certificates don't require auto-renewal
+# They are long-term certificates provided by Cloudflare
+echo "ℹ️  Cloudflare Origin certificates don't require auto-renewal"
+echo "   These certificates are valid for 15 years and managed by Cloudflare"
 
 # Display deployment information
 echo ""
@@ -213,7 +140,7 @@ echo "📊 Deployment Summary:"
 echo "   - Application: EverShop"
 echo "   - Domain: https://tvn-sut.info"
 echo "   - Database: PostgreSQL (optimized for 2GB RAM)"
-echo "   - SSL: Let's Encrypt (auto-renewing)"
+echo "   - SSL: Cloudflare Origin Certificate (15-year validity)"
 echo "   - Project Directory: $PROJECT_DIR"
 echo ""
 echo "🔧 Management Commands:"
@@ -226,8 +153,7 @@ echo "📈 Resource Usage (optimized for 1 vCPU / 2GB RAM):"
 echo "   - EverShop App: 0.5 vCPU / 512MB RAM"
 echo "   - PostgreSQL: 0.3 vCPU / 512MB RAM"
 echo "   - Nginx: 0.1 vCPU / 64MB RAM"
-echo "   - Certbot: 0.05 vCPU / 32MB RAM"
-echo "   - Total: ~0.95 vCPU / ~1.12GB RAM"
+echo "   - Total: ~0.9 vCPU / ~1.09GB RAM"
 echo ""
 echo "⚠️  Important Next Steps:"
 echo "   1. Update DNS records for tvn-sut.info to point to your VPS IP"
@@ -236,4 +162,4 @@ echo "   3. Run seed data: docker-compose exec app node ./packages/evershop/dist
 echo "   4. Access your store: https://tvn-sut.info"
 echo "   5. Access admin panel: https://tvn-sut.info/admin"
 echo ""
-echo "✅ EverShop is now deployed with free SSL and optimized for your 1 vCPU / 2GB RAM VPS!"
+echo "✅ EverShop is now deployed with Cloudflare SSL and optimized for your 1 vCPU / 2GB RAM VPS!"
