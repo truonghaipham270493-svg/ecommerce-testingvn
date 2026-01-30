@@ -1,0 +1,38 @@
+# Development Dockerfile for EverShop
+FROM node:18-alpine
+
+# Install dependencies for building native modules
+RUN apk add --no-cache python3 make g++ postgresql-client
+
+# Create app directory
+WORKDIR /app
+
+# Copy all source code first
+COPY . .
+
+# Install dependencies using npm workspaces (installs for all packages)
+RUN npm install --workspaces
+
+# Create necessary directories if they don't exist
+RUN mkdir -p themes extensions public media config
+
+# Build TypeScript code for postgres-query-builder package
+RUN cd packages/postgres-query-builder && npm run compile
+
+# Build TypeScript code for evershop package
+# First run tsc to compile TypeScript, then copy remaining files
+RUN cd packages/evershop && npx tsc
+RUN cd packages/evershop && npx copyfiles -u 1 "src/**/*.{graphql,scss,css,json,js}" dist/
+
+# Build the project (webpack build)
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if(r.statusCode !== 200) throw new Error()})"
+
+# Default command (can be overridden by docker-compose)
+CMD ["npm", "start"]

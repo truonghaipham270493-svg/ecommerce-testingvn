@@ -14,7 +14,8 @@ export default (request, response) => {
     setContextValue(request.app, 'pool', pool);
   }
   setContextValue(request, 'pool', pool);
-  const homeUrl = getBaseUrl();
+  // Use request protocol and host to get the correct URL when behind reverse proxy
+  const homeUrl = `${request.protocol}://${request.get('host')}`;
   setContextValue(request.app, 'homeUrl', homeUrl);
   setPageMetaInfo(request, {
     baseUrl: homeUrl
