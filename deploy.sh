@@ -69,12 +69,12 @@ EOF
 echo "✅ Environment file created at $PROJECT_DIR/.env"
 
 # Ask for Docker image if not default
-read -p "Enter Docker image name [docker.io/evershop:latest]: " CUSTOM_IMAGE
-CUSTOM_IMAGE=${CUSTOM_IMAGE:-docker.io/evershop:latest}
-if [ "$CUSTOM_IMAGE" != "docker.io/evershop:latest" ]; then
-    sed -i "s|DOCKER_IMAGE=docker.io/evershop:latest|DOCKER_IMAGE=$CUSTOM_IMAGE|g" .env
-    echo "✅ Updated .env with Docker image: $CUSTOM_IMAGE"
-fi
+# read -p "Enter Docker image name [docker.io/evershop:latest]: " CUSTOM_IMAGE
+# CUSTOM_IMAGE=${CUSTOM_IMAGE:-docker.io/evershop:latest}
+# if [ "$CUSTOM_IMAGE" != "docker.io/evershop:latest" ]; then
+#     sed -i "s|DOCKER_IMAGE=docker.io/evershop:latest|DOCKER_IMAGE=$CUSTOM_IMAGE|g" .env
+#     echo "✅ Updated .env with Docker image: $CUSTOM_IMAGE"
+# fi
 
 # Create docker-compose.yml from prod version
 echo "🐳 Setting up Docker Compose..."
