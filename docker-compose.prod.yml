@@ -21,16 +21,10 @@ services:
         condition: service_healthy
     expose:
       - "3000"
+    command: ["sh", "-c", "echo 'Waiting for database to be ready...' && sleep 10 && echo 'Starting EverShop...' && node ./packages/evershop/dist/bin/start/index.js"]
     volumes:
       - app-data:/app/public/media
       - app-data:/app/public/images
-    command: >
-      sh -c "
-      echo 'Waiting for database to be ready...'
-      sleep 10
-      echo 'Starting EverShop...'
-      node ./packages/evershop/dist/bin/start/index.js
-      "
     deploy:
       resources:
         limits:
