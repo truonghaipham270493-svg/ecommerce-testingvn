@@ -8,7 +8,7 @@ interface ThumbnailProps {
 
 export function Thumbnail({ imageUrl, qty }: ThumbnailProps) {
   return (
-    <TableCell>
+    <TableCell className="w-20">
       <div className="relative w-12 h-12 flex justify-center border border-divider rounded-[3px] p-0.5 box-border">
         <div className="self-center text-border">
           {imageUrl && (

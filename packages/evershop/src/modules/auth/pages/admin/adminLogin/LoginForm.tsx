@@ -12,21 +12,13 @@ interface LoginFormProps {
   dashboardUrl: string;
 }
 
-const SubmitButton: React.FC<{ formId: string }> = ({ formId }) => {
+const SubmitButton: React.FC = () => {
   const {
     formState: { isSubmitting }
   } = useFormContext();
   return (
     <div className="form-submit-button flex border-t border-border mt-4 pt-4 justify-between">
-      <Button
-        onClick={() => {
-          (document.getElementById(formId) as HTMLFormElement).dispatchEvent(
-            new Event('submit', { cancelable: true, bubbles: true })
-          );
-        }}
-        size="lg"
-        isLoading={isSubmitting}
-      >
+      <Button type="submit" size="lg" isLoading={isSubmitting}>
         SIGN IN
       </Button>
     </div>
@@ -122,7 +114,7 @@ export default function LoginForm({ authUrl, dashboardUrl }: LoginFormProps) {
             },
             {
               component: {
-                default: <SubmitButton formId="adminLoginForm" />
+                default: <SubmitButton />
               },
               sortOrder: 30
             }

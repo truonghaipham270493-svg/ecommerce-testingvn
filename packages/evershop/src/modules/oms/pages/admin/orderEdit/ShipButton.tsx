@@ -30,7 +30,11 @@ export default function ShipButton({
 }: ShipButtonProps) {
   const { openAlert, closeAlert, dispatchAlert } = useAlertContext();
   if (noShippingRequired) {
-    return <Button title="No Shipping Required" variant="secondary" />;
+    return (
+      <Button disabled variant="secondary">
+        No Shipping Required
+      </Button>
+    );
   }
   if (shipment) {
     return null;
@@ -91,7 +95,7 @@ export default function ShipButton({
               primaryAction: {
                 title: 'Cancel',
                 onAction: closeAlert,
-                variant: ''
+                variant: 'outline'
               },
               secondaryAction: {
                 title: 'Ship',
@@ -106,7 +110,7 @@ export default function ShipButton({
                     new Event('submit', { cancelable: true, bubbles: true })
                   );
                 },
-                variant: 'secondary',
+                variant: 'default',
                 isLoading: false
               }
             });

@@ -90,7 +90,11 @@ export default function Customer({
       <CardContent className="border-t border-border pt-3">
         <CardTitle className="mb-2">Shipping Address</CardTitle>
         {!noShippingRequired && <AddressSummary address={shippingAddress} />}
-        {noShippingRequired && <span>{'No shipping required'}</span>}
+        {noShippingRequired && (
+          <span className="text-muted-foreground">
+            {'No shipping required'}
+          </span>
+        )}
       </CardContent>
       <CardContent className="border-t border-border pt-3">
         <CardTitle className="mb-2">Billing address</CardTitle>

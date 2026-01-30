@@ -101,7 +101,7 @@ export default function AddTrackingButton({
               <DialogClose>
                 <Button
                   title="Cancel"
-                  variant="destructive"
+                  variant="outline"
                   onClick={() => {
                     setDialogOpen(false);
                   }}

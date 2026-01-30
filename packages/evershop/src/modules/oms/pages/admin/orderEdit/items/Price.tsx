@@ -8,7 +8,7 @@ interface PriceProps {
 
 export function Price({ price, qty }: PriceProps) {
   return (
-    <TableCell>
+    <TableCell className="w-32 whitespace-nowrap">
       <div className="product-price">
         <span>
           {price} x {qty}

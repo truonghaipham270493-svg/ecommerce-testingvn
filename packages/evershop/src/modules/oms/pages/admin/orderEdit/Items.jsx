@@ -27,7 +27,7 @@ export default function Items({ order: { items, shipmentStatus } }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="table-fixed">
           <TableBody>
             {items.map((i, k) => (
               <TableRow key={k}>
@@ -64,7 +64,8 @@ export default function Items({ order: { items, shipmentStatus } }) {
                       component: { default: 'td' },
                       props: {
                         children: <span>{i.lineTotal.text}</span>,
-                        key: 'lineTotal'
+                        key: 'lineTotal',
+                        className: 'w-20 whitespace-nowrap text-right'
                       },
                       sortOrder: 40,
                       id: 'lineTotal'
