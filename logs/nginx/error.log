@@ -1,3 +1,13 @@
 2026/01/30 08:58:09 [error] 22#22: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.66.146.119, server: localhost, request: "GET / HTTP/1.1", upstream: "http://172.20.0.3:3000/", host: "localhost:8080"
 2026/01/30 08:58:12 [error] 22#22: *3 connect() failed (111: Connection refused) while connecting to upstream, client: 172.66.146.119, server: localhost, request: "GET / HTTP/1.1", upstream: "http://172.20.0.3:3000/", host: "localhost:8080"
 2026/01/30 10:00:29 [error] 22#22: *3 connect() failed (111: Connection refused) while connecting to upstream, client: 172.66.146.119, server: localhost, request: "GET /page/about-us HTTP/1.1", upstream: "http://172.20.0.3:3000/page/about-us", host: "localhost:8080", referrer: "http://localhost:8080/product/f780049e-e816-4176-b40b-f3d2c8453dda"
+2026/01/30 15:03:35 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:35 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:35 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:36 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:37 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:39 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:42 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:03:49 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:04:02 [emerg] 1#1: host not found in upstream "app:3000" in /etc/nginx/nginx.conf:33
+2026/01/30 15:10:56 [error] 30#30: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.66.146.119, server: localhost, request: "GET / HTTP/1.1", upstream: "http://172.20.0.3:3000/", host: "localhost:8080"

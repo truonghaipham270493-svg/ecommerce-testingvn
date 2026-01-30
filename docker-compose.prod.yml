@@ -8,9 +8,9 @@ services:
     environment:
       DB_HOST: database
       DB_PORT: 5432
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_USER: ${DB_USER:-postgres}
-      DB_NAME: ${DB_NAME:-evershop}
+      DB_PASSWORD: evershop_password_123
+      DB_USER: evershop
+      DB_NAME: evershop
       NODE_ENV: production
       PORT: 3000
       NODE_OPTIONS: "--max-old-space-size=512"
@@ -40,10 +40,11 @@ services:
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_DB: ${DB_NAME:-evershop}
+      POSTGRES_PASSWORD: evershop_password_123
+      POSTGRES_USER: evershop
+      POSTGRES_DB: evershop
       # PostgreSQL optimization for small memory
       POSTGRES_SHARED_BUFFERS: 128MB
       POSTGRES_EFFECTIVE_CACHE_SIZE: 256MB
@@ -57,7 +58,7 @@ services:
     expose:
       - "5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U evershop"]
       interval: 10s
       timeout: 5s
       retries: 5

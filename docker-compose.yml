@@ -20,53 +20,48 @@ services:
       timeout: 10s
       retries: 3
 
-  # EverShop application - built from source
+  # EverShop application - using pre-built image
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    image: e1497e383b18
     restart: always
     environment:
       DB_HOST: database
       DB_PORT: 5432
-      DB_PASSWORD: postgres
-      DB_USER: postgres
-      DB_NAME: postgres
-      NODE_ENV: development
+      DB_PASSWORD: evershop_password_123
+      DB_USER: evershop
+      DB_NAME: evershop
+      NODE_ENV: production
+      PORT: 3000
+      NODE_OPTIONS: "--max-old-space-size=512"
     networks:
       - myevershop
     depends_on:
       database:
         condition: service_healthy
-    # Don't expose port 3000 directly, nginx will proxy
     expose:
       - "3000"
-    # Command to build and start the app
-    command: sh -c "echo 'Waiting for database to be ready...'; sleep 15; echo 'Building EverShop...'; cd /app/packages/evershop && npx tsc && npx copyfiles -u 1 'src/**/*.{graphql,scss,css,json,js}' dist/; cd /app/packages/postgres-query-builder && npx tsc; echo 'Running webpack build...'; cd /app && npm run build; echo 'Starting EverShop...'; npm start"
+    command: ["sh", "-c", "echo 'Waiting for database to be ready...' && sleep 10 && echo 'Starting EverShop...' && node ./packages/evershop/dist/bin/start/index.js"]
     volumes:
-      # Mount source code for development (hot reload)
-      - .:/app
-      - /app/node_modules
-      # Mount seed images for seeding process
-      - ./seed/images:/app/seed/images:ro
+      - app-data:/app/public/media
+      - app-data:/app/public/images
   
   # PostgreSQL database
   database:
-    image: postgres:16
+    image: postgres:16-alpine
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_PASSWORD: evershop_password_123
+      POSTGRES_USER: evershop
+      POSTGRES_DB: evershop
     networks:
       - myevershop
     expose:
       - "5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U evershop"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -78,3 +73,4 @@ networks:
 
 volumes:
   postgres-data:
+  app-data:

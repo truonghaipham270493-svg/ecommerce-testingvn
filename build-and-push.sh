@@ -14,28 +14,12 @@ TAG="latest"
 
 # Build the image locally
 echo "🏗️  Building Docker image..."
-docker build -f Dockerfile.dev -t $IMAGE_NAME:$TAG .
+#docker build -f Dockerfile.dev  --platform linux/amd64 -t $IMAGE_NAME:$TAG .
+docker build -f Dockerfile.dev  -t $IMAGE_NAME:1 .
 
 # Tag for registry
 echo "🏷️  Tagging image for registry..."
-docker tag $IMAGE_NAME:$TAG $REGISTRY/$IMAGE_NAME:$TAG
+docker tag ecommerce-testingvn:1 haiphamt1/testingvn:1
 
-echo "✅ Image built and tagged as:"
-echo "   - Local: $IMAGE_NAME:$TAG"
-echo "   - Registry: $REGISTRY/$IMAGE_NAME:$TAG"
-
-echo ""
-echo "📋 Next steps:"
-echo "1. Login to registry:"
-echo "   docker login $REGISTRY"
-echo ""
-echo "2. Push image to registry:"
-echo "   docker push $REGISTRY/$IMAGE_NAME:$TAG"
-echo ""
-echo "3. On VPS, update docker-compose.prod.yml to use the registry image:"
-echo "   Change 'build:' to 'image: $REGISTRY/$IMAGE_NAME:$TAG'"
-echo ""
-echo "4. Deploy on VPS:"
-echo "   cd /opt/evershop"
-echo "   docker-compose pull"
-echo "   docker-compose up -d"
+echo "✅ Image push"
+#docker push haiphamt1/testingvn:latest
